@@ -1,10 +1,10 @@
 /** Tugas Besar Keamanan Informasi
  *  Analisis Perbandingan Dictionary Brute Force Hybrid Attack dan Rule-Based Dictionary Attack
  * 
- * @author Vincent Emmanuel Suwardy / 6182201067
- * @author Lintang Kastara Erlangga / 6182201097
- * @author Michael William Iswadi / 6182201019
- * @author Alexander Vinchent Nathanael / 6182201089
+ *  @author Vincent Emmanuel Suwardy / 6182201067
+ *  @author Lintang Kastara Erlangga / 6182201097
+ *  @author Michael William Iswadi / 6182201019
+ *  @author Alexander Vinchent Nathanael / 6182201089
  */
 
 import java.io.BufferedReader;
@@ -43,21 +43,39 @@ public class Main {
             write.flush();
         }
 
+        String result = "";
+
         /* Dictionary Brute Force Hybrid Attack */
         long startBruteForce = System.currentTimeMillis();
         DictionaryBruteForce bruteForce = new DictionaryBruteForce();
-        bruteForce.crackPassword(password);
+        boolean bruteForceResult = bruteForce.crackPassword(password);
         long endBruteForce = System.currentTimeMillis();
 
         // output hasil brute force
+        if (bruteForceResult) {
+            result = "cracked!";
+        }
+        else {
+            result = "failed to crack";
+        }
+
+        write.write("Brute Force Hybrid Attack Result: " + result + " | Time spend: " + (endBruteForce - startBruteForce) + " ms\n");
 
         /* Dictionary Rule-Based Attack */
         long startRuleBased = System.currentTimeMillis();
         DictionaryRuleBased ruleBased = new DictionaryRuleBased();
-        ruleBased.crackPassword(password);
+        boolean ruleBasedResult = ruleBased.crackPassword(password);
         long endRuleBased = System.currentTimeMillis();
 
         // output hasil rule based
+        if (ruleBasedResult) {
+            result = "cracked!";
+        }
+        else {
+            result = "failed to crack";
+        }
+
+        write.write("Rule Based Attack Result: " + result + " | Time spend: " + (startRuleBased - endRuleBased) + " ms\n");
 
         write.flush();
         write.close();
