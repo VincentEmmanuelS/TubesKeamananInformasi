@@ -29,10 +29,10 @@ public class Main {
             password = read.readLine();
 
             if (password.length() < 8) {
-                write.write("Password harus memiliki minimal 8 karakter!\n");
+                write.write("Password must be at least 8 characters long!\n");
             }
-            else if (password.length() > 32) {
-                write.write("Password hanya memiliki maksimal 32 karakter!\n");
+            else if (password.length() > 16) {
+                write.write("Password can only be a maximum of 16 characters long!\n");
             } 
             else {
                 valid = true;
@@ -53,10 +53,10 @@ public class Main {
 
         // output hasil brute force
         if (bruteForceResult) {
-            result = "cracked!";
+            result = "Cracked!";
         }
         else {
-            result = "failed to crack";
+            result = "Failed to crack";
         }
 
         write.write("Brute Force Hybrid Attack Result: " + result + " | Time spend: " + (endBruteForce - startBruteForce) + " ms\n");
@@ -69,13 +69,13 @@ public class Main {
 
         // output hasil rule based
         if (ruleBasedResult) {
-            result = "cracked!";
+            result = "Cracked!";
         }
         else {
-            result = "failed to crack";
+            result = "Failed to crack";
         }
 
-        write.write("Rule Based Attack Result: " + result + " | Time spend: " + (startRuleBased - endRuleBased) + " ms\n");
+        write.write("Rule Based Attack Result: " + result + " | Time spend: " + (endRuleBased - startRuleBased) + " ms\n");
 
         write.flush();
         write.close();
