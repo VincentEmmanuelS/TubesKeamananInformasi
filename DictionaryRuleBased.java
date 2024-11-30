@@ -95,10 +95,20 @@ public class DictionaryRuleBased {
                 }
 
                 // Append character X to end
-
+                for (char c : charSet) {
+                    String appendedToEnd = keyword + c;
+                    if (appendedToEnd.equals(password)) {
+                        return true;
+                    }
+                }
 
                 // Append character X to front
-
+                for (char c : charSet) {
+                    String appendedToFront = c + keyword;
+                    if (appendedToFront.equals(password)) {
+                        return true;
+                    }
+                }
 
                 // Insert character X at position N (N starts from 0)
 
