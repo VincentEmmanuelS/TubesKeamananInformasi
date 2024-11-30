@@ -6,8 +6,8 @@ public class DictionaryBruteForce {
 
     public boolean crackPassword(String password) {
         try (BufferedReader read = new BufferedReader(new FileReader("Dictionary.txt"))) {
-            String word;
-            while ((word = read.readLine()) != null) {
+            String keyword;
+            while ((keyword = read.readLine()) != null) {
                 // Bandingin
             }
         } catch (IOException e) {
