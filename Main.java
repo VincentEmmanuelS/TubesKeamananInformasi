@@ -31,8 +31,8 @@ public class Main {
             if (password.length() < 8) {
                 write.write("Password harus memiliki minimal 8 karakter!\n");
             }
-            else if (password.length() > 21) {
-                write.write("Password hanya memiliki maksimal 21 karakter!\n");
+            else if (password.length() > 32) {
+                write.write("Password hanya memiliki maksimal 32 karakter!\n");
             } 
             else {
                 valid = true;
