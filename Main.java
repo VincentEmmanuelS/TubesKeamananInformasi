@@ -23,9 +23,10 @@ public class Main {
         write.flush();
 
         boolean valid = false;
+        String password = "";
 
         while (!valid) {
-            String password = read.readLine();
+            password = read.readLine();
 
             if (password.length() < 8) {
                 write.write("Password harus memiliki minimal 8 karakter!\n");
@@ -45,7 +46,7 @@ public class Main {
         /* Dictionary Brute Force Hybrid Attack */
         long startBruteForce = System.currentTimeMillis();
         DictionaryBruteForce bruteForce = new DictionaryBruteForce();
-        // crack password
+        bruteForce.crackPassword(password);
         long endBruteForce = System.currentTimeMillis();
 
         // output hasil brute force
@@ -53,7 +54,7 @@ public class Main {
         /* Dictionary Rule-Based Attack */
         long startRuleBased = System.currentTimeMillis();
         DictionaryRuleBased ruleBased = new DictionaryRuleBased();
-        // crack password
+        ruleBased.crackPassword(password);
         long endRuleBased = System.currentTimeMillis();
 
         // output hasil rule based
