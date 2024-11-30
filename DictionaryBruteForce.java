@@ -8,8 +8,9 @@ public class DictionaryBruteForce {
         try (BufferedReader read = new BufferedReader(new FileReader("Dictionary.txt"))) {
             String keyword;
             while ((keyword = read.readLine()) != null) {
-                
+                return false;
             }
+            return false;
         } catch (IOException e) {
             System.out.println("Error reading dictionary file: " + e.getMessage());
         }

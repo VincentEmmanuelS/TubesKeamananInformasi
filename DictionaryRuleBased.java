@@ -5,8 +5,8 @@ import java.io.IOException;
 public class DictionaryRuleBased {
 
     /* VARIABLES */
-    private static final int MAX_PASSWORD_LENGTH = 32;
-    private static final char[] charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*-_=+.>,<?".toCharArray();
+    private static final int MAX_PASSWORD_LENGTH = 16;
+    private static final char[] charSet = "0123456789!@#$%^&*-_=+.>,<?".toCharArray();
     private static final char[][] replacements = {
         {'A', '4'}, {'a', '@'}, {'E', '3'}, {'O', '0'},
         {'o', '0'}, {'i', '!'}, {'I', '1'}, {'t', '+'}
@@ -66,14 +66,6 @@ public class DictionaryRuleBased {
                     return true;
                 }
 
-                // Append duplicated word N times (N starts from 0)
-                // Note: max length for password is 32, and min is 8. So if the password length is 8, max append we can do is 3 times.
-                for (int i = 1; i < 4; i++) {
-                    if (appendDuplicatedWord(keyword, i).equals(password)) {
-                        return true;
-                    }
-                }
-
                 // Duplicate word reverse front (DrowssaPPassworD)
                 if (duplicateWordReverseFront(keyword).equals(password)) {
                     return true;
@@ -94,13 +86,13 @@ public class DictionaryRuleBased {
                     return true;
                 }
 
-                // Append character X to end
+                // Append 4 characters X to end
 
 
-                // Append character X to front
+                // Append 4 characters X to front
 
 
-                // Insert character X at position N (N starts from 0)
+                // Append 2 characters X to front and 2 characters X to end
 
 
                 // Delete first character
@@ -219,16 +211,6 @@ public class DictionaryRuleBased {
     
     private String duplicateWord(String s) {
         String duplicated = s + s;
-
-        return this.checkLength(duplicated, s);
-    }
-
-    private String appendDuplicatedWord(String s, int times) {
-        String duplicated = s;
-        
-        for (int i = 0; i < times; i++) {
-            duplicated += s;
-        }
 
         return this.checkLength(duplicated, s);
     }
