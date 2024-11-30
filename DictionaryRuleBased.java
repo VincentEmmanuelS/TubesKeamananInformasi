@@ -12,7 +12,7 @@ public class DictionaryRuleBased {
         {'o', '0'}, {'i', '!'}, {'I', '1'}, {'t', '+'}
     };
 
-    //passwordhj*!g*jkl&&*GF$#31jk+41@
+    //Possible password: passwordhj*!g*jkl&&*GF$#31jk+41@ -> length 32
 
     public boolean crackPassword(String password) {
         try (BufferedReader read = new BufferedReader(new FileReader("Dictionary.txt"))) {
@@ -102,6 +102,7 @@ public class DictionaryRuleBased {
 
                 // Insert character X at position N (N starts from 0)
 
+
                 // Delete first character
                 if (deleteFirstChar(keyword).equals(password)) {
                     return true;
@@ -140,6 +141,11 @@ public class DictionaryRuleBased {
 
                 // Overwrite all possible symbols with characters
                 if (overwriteAllSymbolToChar(keyword).equals(password)) {
+                    return true;
+                }
+
+                // Swap front and back character
+                if (swapFrontAndBack(keyword).equals(password)) {
                     return true;
                 }
 
@@ -279,7 +285,6 @@ public class DictionaryRuleBased {
         return s.substring(0, idx) + s.substring(idx + 1);
     }
 
-
     // [A, 4], [a, @], [E, 3], [O, 0], [o, 0], [i, !], [I, 1], [t, +]
     private String overwriteCharToSymbol(String s, int idx) {
         char[] chars = s.toCharArray();
@@ -349,6 +354,11 @@ public class DictionaryRuleBased {
         }
 
         return new String(chars);
+    }
+
+    private String swapFrontAndBack(String s) {
+        String swap = s.charAt(s.length()-1) + s.substring(1, s.length()-1) + s.charAt(0);
+        return swap;
     }
 
 }
