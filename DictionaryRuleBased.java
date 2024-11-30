@@ -6,7 +6,13 @@ public class DictionaryRuleBased {
 
     /* VARIABLES */
     private static final int MAX_PASSWORD_LENGTH = 32;
-    private static final char[] charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*-_=+.>,<?".toCharArray();
+    private static final char[] charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*-_=+.>,<?".toCharArray();
+    private static final char[][] replacements = {
+        {'A', '4'}, {'a', '@'}, {'E', '3'}, {'O', '0'},
+        {'o', '0'}, {'i', '!'}, {'I', '1'}, {'t', '+'}
+    };
+
+    //passwordhj*!g*jkl&&*GF$#31jk+41@
 
     public boolean crackPassword(String password) {
         try (BufferedReader read = new BufferedReader(new FileReader("Dictionary.txt"))) {
@@ -94,6 +100,8 @@ public class DictionaryRuleBased {
                 // Append character X to front
 
 
+                // Insert character X at position N (N starts from 0)
+
                 // Delete first character
                 if (deleteFirstChar(keyword).equals(password)) {
                     return true;
@@ -109,6 +117,30 @@ public class DictionaryRuleBased {
                     if (deleteCharAt(keyword, i).equals(password)) {
                         return true;
                     }
+                }
+
+                // Overwrite character at position N with symbol
+                for (int i = 0; i < keyword.length(); i++) {
+                    if (overwriteCharToSymbol(keyword, i).equals(password)) {
+                        return true;
+                    }
+                }
+
+                // Overwrite all possible characters with symbols
+                if (overwriteAllCharToSymbol(keyword).equals(password)) {
+                    return true;
+                }
+
+                // Overwrite symbil at position N with character
+                for (int i = 0; i < keyword.length(); i++) {
+                    if (overwriteSymbolToChar(keyword, i).equals(password)) {
+                        return true;
+                    }
+                }
+
+                // Overwrite all possible symbols with characters
+                if (overwriteAllSymbolToChar(keyword).equals(password)) {
+                    return true;
                 }
 
             }
@@ -246,4 +278,77 @@ public class DictionaryRuleBased {
         
         return s.substring(0, idx) + s.substring(idx + 1);
     }
+
+
+    // [A, 4], [a, @], [E, 3], [O, 0], [o, 0], [i, !], [I, 1], [t, +]
+    private String overwriteCharToSymbol(String s, int idx) {
+        char[] chars = s.toCharArray();
+
+        if (idx >= 0 && idx < chars.length) {
+            char curr = chars[idx];
+
+            // Cek untuk setiap pair
+            for (char[] pair : replacements) {
+                if (pair[0] == curr) {
+                    chars[idx] = pair[1];
+                    break;
+                }
+            }
+        }
+
+        return new String(chars);
+    }
+
+    private String overwriteAllCharToSymbol(String s) {
+        char[] chars = s.toCharArray();
+
+        for (int i = 0; i < chars.length; i++) {
+            char curr = chars[i];
+
+            for (char[] pair : replacements) {
+                if (pair[0] == curr) {
+                    chars[i] = pair[1];
+                    break;
+                }
+            }
+        }
+
+        return new String(chars);
+    }
+
+    private String overwriteSymbolToChar(String s, int idx) {
+        char[] chars = s.toCharArray();
+
+        if (idx >= 0 && idx < chars.length) {
+            char curr = chars[idx];
+
+            // Cek untuk setiap pair
+            for (char[] pair : replacements) {
+                if (pair[1] == curr) {
+                    chars[idx] = pair[0];
+                    break;
+                }
+            }
+        }
+
+        return new String(chars);
+    }
+
+    private String overwriteAllSymbolToChar(String s) {
+        char[] chars = s.toCharArray();
+
+        for (int i = 0; i < chars.length; i++) {
+            char curr = chars[i];
+
+            for (char[] pair : replacements) {
+                if (pair[1] == curr) {
+                    chars[i] = pair[0];
+                    break;
+                }
+            }
+        }
+
+        return new String(chars);
+    }
+
 }
