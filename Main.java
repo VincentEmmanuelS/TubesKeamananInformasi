@@ -47,6 +47,7 @@
          }
  
          String result = "";
+         write.write("================================================\n");
          write.write("\nPassword: " + password + "\n");
          write.write("Hashed password: " + hashedPassword + "\n");
          write.write("================================================\n");

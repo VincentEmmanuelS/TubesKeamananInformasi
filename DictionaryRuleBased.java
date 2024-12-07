@@ -23,6 +23,7 @@ public class DictionaryRuleBased {
     };
 
     public boolean crackPassword(String password) {
+        System.out.println("Starting rule based attack: ");
         try (BufferedReader read = new BufferedReader(new FileReader("Dictionary.txt"))) {
             String keyword;
             while ((keyword = read.readLine()) != null) {
@@ -31,31 +32,37 @@ public class DictionaryRuleBased {
                 if (hashFunction.hashPassword(keyword).equals(password)) {
                     return true;
                 }
+                System.out.println("-- do nothing failed");
 
                 // Lowercase all letters
                 if (hashFunction.hashPassword(keyword.toLowerCase()).equals(password)) {
                     return true;
                 }
+                System.out.println("-- lowercase failed");
 
                 // Uppercase all letters
                 if (hashFunction.hashPassword(keyword.toUpperCase()).equals(password)) {
                     return true;
                 }
+                System.out.println("-- uppercase failed");
 
                 // Capitalize the first letter and lower the rest
                 if (hashFunction.hashPassword(capitalizeFirstLetter(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println("-- capitalize failed");
 
                 // Lower first found chacater, uppercase the rest
                 if (hashFunction.hashPassword(lowerFirstUpperRest(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println("-- lower 1st failed");
 
                 // Toggle the case of all characters in word (p@ssW0rd -> P@SSw0RD)
                 if (hashFunction.hashPassword(toggleCase(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println("-- toggle all failed");
                 
                 // Toggle the case of characters at position N (N starts from 0) 
                 for (int i = 0; i < keyword.length(); i++) {
@@ -63,36 +70,43 @@ public class DictionaryRuleBased {
                         return true;
                     }
                 }
+                System.out.println("-- toggle n post failed");
 
                 // Reverse the entire word
                 if (hashFunction.hashPassword(reverseWord(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println("-- reverse failed");
 
                 // Duplicate entire word
                 if (hashFunction.hashPassword(duplicateWord(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println("-- duplicate all failed");
 
                 // Duplicate word reverse front (DrowssaPPassworD)
                 if (hashFunction.hashPassword(duplicateWordReverseFront(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println("-- duplicate reverse start failed");
                 
                 // Duplicate word reverse end (PassworDDrowssaP)
                 if (hashFunction.hashPassword(duplicateWordReverseEnd(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println("-- duplicate reverse end failed");
 
                 // Rotate the word left (p@ssW0rd -> @ssW0rdp)
                 if (hashFunction.hashPassword(rotateLeft(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println("-- rotate left failed");
 
                 // Rotate the word right (p@ssW0rd -> dp@ssW0r)
                 if (hashFunction.hashPassword(rotateRight(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println(("-- rotate right failed"));
 
                 // Append 4 characters X to front
                 for (int i = 1; i <= 4; i++) {
@@ -100,6 +114,7 @@ public class DictionaryRuleBased {
                         return true;
                     }
                 }
+                System.out.println("-- append front failed");
 
                 // Append 4 characters X to end
                 for (int i = 1; i <= 4; i++) {
@@ -107,6 +122,7 @@ public class DictionaryRuleBased {
                         return true;
                     }
                 }
+                System.out.println("-- append end failed");
 
                 // Append 2 characters X to front and 2 characters X to end
                 for (int i = 1; i <= 2; i++) {
@@ -114,16 +130,19 @@ public class DictionaryRuleBased {
                         return true;
                     }
                 }
+                System.out.println("-- append both failed");
 
                 // Delete first character
                 if (hashFunction.hashPassword(deleteFirstChar(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println("-- delete first failed");
 
                 // Delete last character
                 if (hashFunction.hashPassword(deleteLastChar(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println("-- delete last failed");
 
                 // Delete character at position N (N starts from 0)
                 for (int i = 0; i < keyword.length(); i++) {
@@ -131,6 +150,7 @@ public class DictionaryRuleBased {
                         return true;
                     }
                 }
+                System.out.println("-- delete n post failed");
 
                 // Overwrite character at position N with symbol
                 for (int i = 0; i < keyword.length(); i++) {
@@ -138,28 +158,33 @@ public class DictionaryRuleBased {
                         return true;
                     }
                 }
+                System.out.println("-- overwrite symbols n post failed");
 
                 // Overwrite all possible characters with symbols
                 if (hashFunction.hashPassword(overwriteAllCharToSymbol(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println("-- overwrite symbols all failed");
 
-                // Overwrite symbil at position N with character
+                // Overwrite symbol at position N with character
                 for (int i = 0; i < keyword.length(); i++) {
                     if (hashFunction.hashPassword(overwriteSymbolToChar(keyword, i)).equals(password)) {
                         return true;
                     }
                 }
+                System.out.println("-- overwrite char n post failed");
 
                 // Overwrite all possible symbols with characters
                 if (hashFunction.hashPassword(overwriteAllSymbolToChar(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println("-- overwrite char all failed");
 
                 // Swap front and back character
                 if (hashFunction.hashPassword(swapFrontAndBack(keyword)).equals(password)) {
                     return true;
                 }
+                System.out.println("-- swap frond n back failed");
 
                 // Add more method?
 

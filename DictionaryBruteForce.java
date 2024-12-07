@@ -19,6 +19,7 @@ public class DictionaryBruteForce {
     private static final char[] charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*?><,.".toCharArray();
 
     public boolean crackPassword(String password) {
+        System.out.println("Starting brute force attack: ");
         try (BufferedReader read = new BufferedReader(new FileReader("Dictionary.txt"))) {
             String keyword;
             while ((keyword = read.readLine()) != null) {
@@ -30,6 +31,7 @@ public class DictionaryBruteForce {
                     return true;
                 }
             }
+            System.out.println("-- append front failed");
 
             // Append 4 characters X to end
             // System.out.println("Append end...");
@@ -38,6 +40,7 @@ public class DictionaryBruteForce {
                     return true;
                 }
             }
+            System.out.println("-- append end failed");
 
             // Append 2 characters X to front and 2 characters X to end
             // System.out.println("Append front & end...");
@@ -46,6 +49,7 @@ public class DictionaryBruteForce {
                     return true;
                 }
             }
+            System.out.println("-- append both failed");
 
             }
         } catch (IOException e) {
