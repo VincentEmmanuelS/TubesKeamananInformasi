@@ -19,7 +19,7 @@ public class DictionaryBruteForce {
     private static final char[] charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*?><,.".toCharArray();
 
     public boolean crackPassword(String password) {
-        try (BufferedReader read = new BufferedReader(new FileReader("DemoDictionary.txt"))) {
+        try (BufferedReader read = new BufferedReader(new FileReader("Dictionary.txt"))) {
             String keyword;
             while ((keyword = read.readLine()) != null) {
             

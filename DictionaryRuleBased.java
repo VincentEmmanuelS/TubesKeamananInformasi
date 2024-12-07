@@ -23,7 +23,7 @@ public class DictionaryRuleBased {
     };
 
     public boolean crackPassword(String password) {
-        try (BufferedReader read = new BufferedReader(new FileReader("DemoDictionary.txt"))) {
+        try (BufferedReader read = new BufferedReader(new FileReader("Dictionary.txt"))) {
             String keyword;
             while ((keyword = read.readLine()) != null) {
                 
@@ -160,6 +160,8 @@ public class DictionaryRuleBased {
                 if (hashFunction.hashPassword(swapFrontAndBack(keyword)).equals(password)) {
                     return true;
                 }
+
+                // Add more method?
 
             }
         } catch (IOException e) {

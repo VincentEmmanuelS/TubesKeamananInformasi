@@ -47,6 +47,9 @@
          }
  
          String result = "";
+         write.write("\nPassword: " + password + "\n");
+         write.write("Hashed password: " + hashedPassword + "\n");
+         write.write("================================================\n");
  
          /* Dictionary Brute Force Hybrid Attack */
          long startBruteForce = System.currentTimeMillis();
