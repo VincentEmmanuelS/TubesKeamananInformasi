@@ -1,3 +1,8 @@
+/* Password Hasher
+ * 
+ * Class yang akan melakukan hash untuk password menggunakan algoritma SHA-256
+ */
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 

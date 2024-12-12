@@ -1,3 +1,11 @@
+/* Main class
+ * 
+ * Class yang akan membandingkan kedua algoritma dictionary attack
+ * 
+ * Input akan berupa list password yang sudah di hash dengan SHA-256 sebelumnya
+ * Output akan berupa password string (atau "-" jika tidak berhasil) dan wkatu yang dibutuhkan untuk menyerang
+ */
+
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
 

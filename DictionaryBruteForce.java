@@ -1,3 +1,8 @@
+/* Dictionary Brute Force Hybrid Attack
+ * 
+ * Class implementasi untuk algoritma dictionary brute force hybrid attack
+ */
+
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
 

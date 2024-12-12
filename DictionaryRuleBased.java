@@ -1,5 +1,7 @@
-/*
+/* Dictionary Rule-Based Attack
  * Source: https://hashcat.net/wiki/doku.php?id=rule_based_attack
+ * 
+ * Class implementasi untuk algoritma dictionary rule based attack
  */
 
 import java.io.*;
@@ -16,7 +18,9 @@ public class DictionaryRuleBased implements DictionaryAttack {
         String word;
 
         while ((word = reader.readLine()) != null) {
-            if (word.length() < 8 || word.length() > 16) continue; // Enforce password length constraint
+            // Memastikan bahwa password yang diambil dari dictionary memiliki panjang 8 ~ 16 karakter saja
+            if (word.length() < 8 || word.length() > 16) continue;
+
             for (String mutation : generateMutations(word)) {
                 if (passwordHasher.hashPassword(mutation).equals(hashedPassword)) {
                     reader.close();
