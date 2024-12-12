@@ -8,7 +8,6 @@ Dibuat untuk memenuhi Tugas Besar mata kuliah Keamanan Informasi
 
 ---
 # PLEASE READ THIS FILE BEFORE START TESTING THE CODE OR DOING ANY CHANGES TO THE FILES!!
----
 
 Explanation for .txt files:
 - Dictionary.txt: 
