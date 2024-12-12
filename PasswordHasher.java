@@ -2,24 +2,22 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class PasswordHasher {
-    
-    public String hashPassword(String password) {
-        try {
 
-            // Inisialisasi algoritma SHA-256
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+    public String hashPassword(String password) throws NoSuchAlgorithmException {
+        
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(password.getBytes());
+        StringBuilder hexString = new StringBuilder();
 
-            byte[] hashedBytes = digest.digest(password.getBytes());
-            StringBuilder hexString = new StringBuilder();
-
-            for (byte b : hashedBytes) {
-                hexString.append(String.format("%02x", b));
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                hexString.append('0');
             }
-            return hexString.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error hashing password", e);
+            hexString.append(hex);
         }
-    }
 
+        return hexString.toString();
+
+    }
 }
