@@ -8,15 +8,14 @@ Dibuat untuk memenuhi Tugas Besar mata kuliah Keamanan Informasi
 
 ---
 # PLEASE READ THIS FILE BEFORE START TESTING THE CODE OR DOING ANY CHANGES TO THE FILES!!
----
 
 Explanation for .txt files:
 - Dictionary.txt: 
   > Berisi dictionary list password dalam bentuk text untuk melakukan dictionary attack.
-  > Source
+  > [Source:-]()
 - Password.txt:
   > Berisi list password yang akan diuji (akan di crack menggunakan algoritma).
-  > Source
+  > [Source:-]()
 - HashedPassword.txt: 
   > Berisi list hashed password dari Password.txt -> di compile dengan HashedPasswordGenerator.java
 
@@ -29,17 +28,17 @@ Explanation for .java files (available in comment section on every java files al
   > Output akan berupa password string (atau "-" jika tidak berhasil) dan waktu yang dibutuhkan untuk menyerang.
 - DictionaryAttack.java: 
   > Interface DictionaryAttack
-  > Hanya untuk memastikan bahwa kedua algoritma attack berasal dari dictionary attack
+  > Hanya untuk memastikan bahwa kedua algoritma attack berasal dari dictionary attack.
     - DictionaryBruteForce.java: 
-      > Class implementasi untuk algoritma dictionary brute force hybrid attack
+      > Class implementasi untuk algoritma dictionary brute force hybrid attack.
     - DictionaryRuleBased.java: 
-      > Class implementasi untuk algoritma dictionary rule based attack
+      > Class implementasi untuk algoritma dictionary rule based attack.
       > [Source: hashcat](https://hashcat.net/wiki/doku.php?id=rule_based_attack)
 - PasswordHasher.java: 
-  > Class yang akan melakukan hash untuk password menggunakan algoritma SHA-256
+  > Class yang akan melakukan hash untuk password menggunakan algoritma SHA-256.
 - HashedPasswordGenerator.java: 
-  > Class sementara yang akan digunakan untuk melakukan enkripsi password string ke hashed password dengan SHA-256
-  > OutputFile akan selalu di overwrite setiap kali melakukan run (menghindari adanya hashedPassword yang tertinggal ketika list password diganti)
+  > Class sementara yang akan digunakan untuk melakukan enkripsi password string ke hashed password dengan SHA-256.
+  > OutputFile akan selalu di overwrite setiap kali melakukan run (menghindari adanya hashedPassword yang tertinggal ketika list password diganti).
 
 ---
 

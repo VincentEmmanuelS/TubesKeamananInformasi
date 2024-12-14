@@ -25,24 +25,33 @@ public class Main {
         DictionaryBruteForce dbf = new DictionaryBruteForce();
 
         String hashedPassword;
+        String status;          // Later will be used as counter for success rate %
         while ((hashedPassword = hashReader.readLine()) != null) {
 
             // Start dictionary rule-based attack
             long startTime = System.nanoTime();
             String ruleBasedResult = drb.crackPassword(hashedPassword, dictionaryFile);
             long ruleBasedTime = System.nanoTime() - startTime;
+
+            if (ruleBasedResult != null) { status = "success"; }
+            else { status = "failed"; }
+
             // Output rule-based attack
             writer.write("Hashed Password: " + hashedPassword + "\n");
             writer.write("Dictionary Rule-Based Attack:\n");
-            writer.write("Result: " + (ruleBasedResult != null ? ruleBasedResult : "-") + "| Time: " + ruleBasedTime / 1_000_000 + "ms\n");
+            writer.write("[status: " + status + "] " + "Result: " + (ruleBasedResult != null ? ruleBasedResult : "-") + " | Time: " + ruleBasedTime / 1_000_000 + "ms\n");
 
             // Start dictionary brute force hybrid attack
             startTime = System.nanoTime();
             String bruteForceResult = dbf.crackPassword(hashedPassword, dictionaryFile);
             long bruteForceTime = System.nanoTime() - startTime;
+
+            if (bruteForceResult != null) { status = "success"; }
+            else { status = "failed"; }
+
             // Output brute force hybrid attack
             writer.write("Brute Force Hybrid Attack:\n");
-            writer.write("Result: " + (bruteForceResult != null ? bruteForceResult : "-") + "| Time: " + bruteForceTime / 1_000_000 + "ms\n");
+            writer.write("[status: " + status + "] " + "Result: " + (bruteForceResult != null ? bruteForceResult : "-") + " | Time: " + bruteForceTime / 1_000_000 + "ms\n");
 
         }
 
