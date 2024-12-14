@@ -51,8 +51,19 @@ public class DictionaryRuleBased implements DictionaryAttack {
         mutations.add(rotateRight(word));
         mutations.add(deleteFirstChar(word));
         mutations.add(deleteLastChar(word));
-        // Insertion but symbols only??? "! @ # $ % ^ & * ~ - _ + = / ? . > , < \ | [ ] { } ()"
-        // Insertion like bruteforce, 3 front, 3 end, 2 front + 2 end
+        // Insertion but symbols only??? "! @ # $ % ^ & * ~ - _ + = / ? . > , < \ | [ ] { } ()" Insertion like bruteforce, 3 front, 3 end, 2 front + 2 end
+        // Bitwise shift left
+        // Bitwise shift right
+        // ASCII increment
+        // ASCII decrement
+        // Replace N+1 (N = 0 ~ length-1)
+        // Replace N-1 (N = 1 ~ length)
+        // Duplicate block front
+        // Duplicate block back
+        // Replace char with symbol
+        // Replace symbol with char
+        // Replace all with symbol
+        // Replace all with character
 
         return mutations;
     }

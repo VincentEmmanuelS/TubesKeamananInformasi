@@ -39,7 +39,7 @@ public class Main {
             // Output rule-based attack
             writer.write("Hashed Password: " + hashedPassword + "\n");
             writer.write("Dictionary Rule-Based Attack:\n");
-            writer.write("[status: " + status + "] " + "Result: " + (ruleBasedResult != null ? ruleBasedResult : "-") + " | Time: " + ruleBasedTime / 1_000_000 + "ms\n");
+            writer.write("[status: " + status + "] " + "Result: " + (ruleBasedResult != null ? ruleBasedResult : "-") + " | Time: " + ruleBasedTime / 1_000_000_000 + "s (" + ruleBasedTime / 1_000_000 + " ms)\n");
 
             // Start dictionary brute force hybrid attack
             startTime = System.nanoTime();
@@ -51,7 +51,7 @@ public class Main {
 
             // Output brute force hybrid attack
             writer.write("Brute Force Hybrid Attack:\n");
-            writer.write("[status: " + status + "] " + "Result: " + (bruteForceResult != null ? bruteForceResult : "-") + " | Time: " + bruteForceTime / 1_000_000 + "ms\n");
+            writer.write("[status: " + status + "] " + "Result: " + (bruteForceResult != null ? bruteForceResult : "-") + " | Time: " + bruteForceTime / 1_000_000_000 + "s (" + bruteForceTime / 1_000_000 + " ms)\n");
 
         }
 
