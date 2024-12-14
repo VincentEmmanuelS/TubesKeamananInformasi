@@ -51,20 +51,21 @@ public class DictionaryRuleBased implements DictionaryAttack {
         mutations.add(rotateRight(word));
         mutations.add(deleteFirstChar(word));
         mutations.add(deleteLastChar(word));
-        // Insertion but symbols only??? "! @ # $ % ^ & * ~ - _ + = / ? . > , < \ | [ ] { } ()" Insertion like bruteforce, 3 front, 3 end, 2 front + 2 end
-        // Bitwise shift left
-        // Bitwise shift right
-        // ASCII increment
-        // ASCII decrement
-        // Replace N+1 (N = 0 ~ length-1)
-        // Replace N-1 (N = 1 ~ length)
-        // Duplicate block front
-        // Duplicate block back
-        // Replace char with symbol
-        // Replace symbol with char
-        // Replace all with symbol
-        // Replace all with character
-
+        mutations.addAll(insertSymbols(word));
+        mutations.add(bitwiseShiftLeft(word));
+        mutations.add(bitwiseShiftRight(word));
+        mutations.add(asciiIncrement(word));
+        mutations.add(asciiDecrement(word));
+        mutations.add(replaceNPlusOne(word));
+        mutations.add(replaceNMinusOne(word));
+        mutations.add(duplicateBlockFront(word));
+        mutations.add(duplicateBlockBack(word));
+        mutations.add(replaceCharWithSymbol(word));
+        mutations.add(replaceSymbolWithChar(word));
+        mutations.addAll(replaceAllWithSymbol(word));
+        mutations.addAll(replaceAllWithCharacter(word));
+        mutations.addAll(replaceCharacterWithSymbol(word));
+        mutations.addAll(replaceSymbolWithCharacter(word));
         return mutations;
     }
 
@@ -106,4 +107,170 @@ public class DictionaryRuleBased implements DictionaryAttack {
         return word.substring(0, word.length() - 1);
     }
 
+    private List<String> insertSymbols(String word) {
+        String symbols = "!@#$%^&*~-_+=/?.,<>\\|[]{}()";
+        List<String> mutations = new ArrayList<>();
+
+        for (char symbol : symbols.toCharArray()) {
+            mutations.add(symbol + symbol + symbol + word);             // Triple front
+            mutations.add(word + symbol + symbol + symbol);             // Triple end
+            mutations.add(symbol + symbol + word + symbol + symbol);    // Double front and end
+        }
+
+        return mutations;
+    }
+
+    private String bitwiseShiftLeft(String word) {
+        StringBuilder result = new StringBuilder();
+        for (char c : word.toCharArray()) {
+            result.append((char) (c << 1));
+        }
+        return result.toString();
+    }
+
+    private String bitwiseShiftRight(String word) {
+        StringBuilder result = new StringBuilder();
+        for (char c : word.toCharArray()) {
+            result.append((char) (c >> 1));
+        }
+        return result.toString();
+    }
+
+    private String asciiIncrement(String word) {
+        StringBuilder result = new StringBuilder();
+        for (char c : word.toCharArray()) {
+            result.append((char) (c + 1));
+        }
+        return result.toString();
+    }
+
+    private String asciiDecrement(String word) {
+        StringBuilder result = new StringBuilder();
+        for (char c : word.toCharArray()) {
+            result.append((char) (c - 1));
+        }
+        return result.toString();
+    }
+
+    private String replaceNPlusOne(String word) {
+        if (word.length() < 2) return word;
+        char[] chars = word.toCharArray();
+        for (int i = 0; i < word.length() - 1; i++) {
+            chars[i] = chars[i + 1];
+        }
+        return new String(chars);
+    }
+
+    private String replaceNMinusOne(String word) {
+        if (word.length() < 2) return word;
+        char[] chars = word.toCharArray();
+        for (int i = word.length() - 1; i > 0; i--) {
+            chars[i] = chars[i - 1];
+        }
+        return new String(chars);
+    }
+
+    private String duplicateBlockFront(String word) {
+        return word + word.substring(0, word.length() / 2);
+    }
+
+    private String duplicateBlockBack(String word) {
+        return word.substring(word.length() / 2) + word;
+    }
+
+    private String replaceCharWithSymbol(String word) {
+        String symbols = "!@#$%^&*~-_+=/?.,<>\\|[]{}()";
+        char[] chars = word.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            chars[i] = symbols.charAt(i % symbols.length());
+        }
+        return new String(chars);
+    }
+
+    private String replaceSymbolWithChar(String word) {
+        StringBuilder result = new StringBuilder();
+        for (char c : word.toCharArray()) {
+            if (!Character.isLetterOrDigit(c)) {
+                result.append('x'); // Replace symbols with a generic char
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
+    }
+
+    private List<String> replaceAllWithSymbol(String word) {
+        String symbols = "!@#$%^&*~-_+=/?.,<>\\|[]{}()";
+        List<String> mutations = new ArrayList<>();
+
+        for (char symbol : symbols.toCharArray()) {
+            mutations.add(String.valueOf(symbol).repeat(word.length()));
+        }
+
+        return mutations;
+    }
+
+    private List<String> replaceAllWithCharacter(String word) {
+        String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        List<String> mutations = new ArrayList<>();
+
+        for (char c : chars.toCharArray()) {
+            mutations.add(String.valueOf(c).repeat(word.length()));
+        }
+
+        return mutations;
+    }
+
+    private List<String> replaceSymbolWithCharacter(String word) {
+        // Mapping of symbols to interchangeable characters
+        String[][] symbolToCharMapping = {
+            {"@", "a"},
+            {"3", "e"},
+            {"1", "l"},
+            {"0", "o"},
+            {"$", "s"},
+            {"7", "t"},
+            {"+", "t"},
+            {"!", "i"}
+        };
+
+        List<String> mutations = new ArrayList<>();
+
+        for (String[] mapping : symbolToCharMapping) {
+            String symbol = mapping[0];
+            String character = mapping[1];
+            if (word.contains(symbol)) {
+                mutations.add(word.replace(symbol, character));
+            }
+        }
+
+        return mutations;
+    }
+
+    // Reverse: Replace character with symbol
+    private List<String> replaceCharacterWithSymbol(String word) {
+        // Mapping of characters to interchangeable symbols
+        String[][] charToSymbolMapping = {
+            {"a", "@"},
+            {"e", "3"},
+            {"l", "1"},
+            {"o", "0"},
+            {"s", "$"},
+            {"t", "7"},
+            {"t", "+"},
+            {"i", "!"}
+        };
+
+        List<String> mutations = new ArrayList<>();
+
+        for (String[] mapping : charToSymbolMapping) {
+            String character = mapping[0];
+            String symbol = mapping[1];
+            if (word.contains(character)) {
+                mutations.add(word.replace(character, symbol));
+            }
+        }
+
+        return mutations;
+    }
 }
