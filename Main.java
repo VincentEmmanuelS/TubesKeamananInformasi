@@ -19,13 +19,18 @@ public class Main {
         // Load dictionary
         File dictionaryFile = new File("Dictionary.txt");
 
-        // Buffer buat output
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        // Output result ke file
+        File resultsFile = new File("Results.txt");
+        BufferedWriter writer = new BufferedWriter(new FileWriter(resultsFile, false));
+
+        // BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        
         DictionaryRuleBased drb = new DictionaryRuleBased();
         DictionaryBruteForce dbf = new DictionaryBruteForce();
 
         String hashedPassword;
         String status;          // Later will be used as counter for success rate %
+        System.out.println("Program is running");
         while ((hashedPassword = hashReader.readLine()) != null) {
 
             // Start dictionary rule-based attack
@@ -51,7 +56,7 @@ public class Main {
 
             // Output brute force hybrid attack
             writer.write("Brute Force Hybrid Attack:\n");
-            writer.write("[status: " + status + "] " + "Result: " + (bruteForceResult != null ? bruteForceResult : "-") + " | Time: " + bruteForceTime / 1_000_000_000 + "s (" + bruteForceTime / 1_000_000 + " ms)\n");
+            writer.write("[status: " + status + "] " + "Result: " + (bruteForceResult != null ? bruteForceResult : "-") + " | Time: " + bruteForceTime / 1_000_000_000 + "s (" + bruteForceTime / 1_000_000 + " ms)\n\n");
 
         }
 
