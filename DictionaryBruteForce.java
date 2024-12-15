@@ -14,6 +14,7 @@ public class DictionaryBruteForce implements DictionaryAttack {
 
     public String crackPassword(String hashedPassword, File dictionaryFile) throws IOException, NoSuchAlgorithmException {
 
+        System.out.println("Starting Brute Force Attack");
         BufferedReader reader = new BufferedReader(new FileReader(dictionaryFile));
         PasswordHasher passwordHasher = new PasswordHasher();
         String word;
@@ -46,21 +47,25 @@ public class DictionaryBruteForce implements DictionaryAttack {
 
         // Add 1-3 characters in front
         for (int i = 1; i <= 3; i++) {
+            System.out.println("Append " + i + "char(s) in front");
             mutations.addAll(addCharactersAtPosition(base, i, true));
         }
 
         // Add 1-3 characters at the end
         for (int i = 1; i <= 3; i++) {
+            System.out.println("Append " + i + "char(s) in back");
             mutations.addAll(addCharactersAtPosition(base, i, false));
         }
 
         // Add 1-2 characters at the front and 1-2 at the back
         for (int i = 1; i <= 2; i++) {
             for (int j = 1; j <= 2; j++) {
+                System.out.println("Append " + i + "char(s) in front and " + j + "char(s) in back");
                 mutations.addAll(addCharactersFrontAndBack(base, i, j));
             }
         }
 
+        System.out.println("End.");
         return mutations;
     }
 

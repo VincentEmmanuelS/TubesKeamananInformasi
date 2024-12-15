@@ -13,6 +13,7 @@ public class DictionaryRuleBased implements DictionaryAttack {
 
     public String crackPassword(String hashedPassword, File dictionaryFile) throws IOException, NoSuchAlgorithmException {
 
+        System.out.println("Starting Rule-Based Attack");
         BufferedReader reader = new BufferedReader(new FileReader(dictionaryFile));
         PasswordHasher passwordHasher = new PasswordHasher();
         String word;
@@ -37,35 +38,65 @@ public class DictionaryRuleBased implements DictionaryAttack {
     private List<String> generateMutations(String word) {
 
         List<String> mutations = new ArrayList<>();
+        System.out.println("Do nothing");
         mutations.add(word);                    // Do nothing
+        System.out.println("To lower case");
         mutations.add(word.toLowerCase());
+        System.out.println("To upper case");
         mutations.add(word.toUpperCase());
+        System.out.println("Capitalized first");
         mutations.add(capitalizeFirst(word));
+        System.out.println("Lower first upper rest");
         mutations.add(lowerFirstUpperRest(word));
+        System.out.println("Toggle case");
         mutations.add(toggleCase(word));
+        System.out.println("Reverse word");
         mutations.add(reverse(word));
+        System.out.println("Duplicate word");
         mutations.add(word + word);             // Duplicate
+        System.out.println("Duplicate reverse end");
         mutations.add(word + reverse(word));    // Reverse end
+        System.out.println("Duplicate reverse front");
         mutations.add(reverse(word) + word);    // Reverse front
+        System.out.println("Rotate left");
         mutations.add(rotateLeft(word));
+        System.out.println("Rotate right");
         mutations.add(rotateRight(word));
+        System.out.println("Delete first character");
         mutations.add(deleteFirstChar(word));
+        System.out.println("Delete last character");
         mutations.add(deleteLastChar(word));
+        System.out.println("Insert symbols");
         mutations.addAll(insertSymbols(word));
+        System.out.println("Bitwise shift left");
         mutations.add(bitwiseShiftLeft(word));
+        System.out.println("Bitwise shift right");
         mutations.add(bitwiseShiftRight(word));
+        System.out.println("ASCII increment");
         mutations.add(asciiIncrement(word));
+        System.out.println("ASCII decrement");
         mutations.add(asciiDecrement(word));
+        System.out.println("Replace N +1");
         mutations.add(replaceNPlusOne(word));
+        System.out.println("Replace N -1");
         mutations.add(replaceNMinusOne(word));
+        System.out.println("Duplicate block front");
         mutations.add(duplicateBlockFront(word));
+        System.out.println("Duplicate block back");
         mutations.add(duplicateBlockBack(word));
+        System.out.println("Replace char with symbol");
         mutations.add(replaceCharWithSymbol(word));
+        System.out.println("Replace symbol with char");
         mutations.add(replaceSymbolWithChar(word));
+        System.out.println("Replace all with symbols");
         mutations.addAll(replaceAllWithSymbol(word));
+        System.out.println("Replace all with characters");
         mutations.addAll(replaceAllWithCharacter(word));
+        System.out.println("Replace char with symbol #2");
         mutations.addAll(replaceCharacterWithSymbol(word));
+        System.out.println("Replace symbol with char #2");
         mutations.addAll(replaceSymbolWithCharacter(word));
+        System.out.println("End.");
         return mutations;
     }
 
