@@ -12,7 +12,7 @@ Dibuat untuk memenuhi Tugas Besar mata kuliah Keamanan Informasi
 Explanation for .txt files:
 - Dictionary.txt: 
   > Berisi dictionary list password dalam bentuk text untuk melakukan dictionary attack.
-  > [Source:-]()
+  > [Source:-](https://en.wikipedia.org/wiki/List_of_the_most_common_passwords)
 - Password.txt:
   > Berisi list password yang akan diuji (akan di crack menggunakan algoritma).
   > [Source:-]()
