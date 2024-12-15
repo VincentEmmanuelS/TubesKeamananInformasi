@@ -1,129 +1,117 @@
-/**
- * @Note Max append adalah 4 (depan dan belakang), dan kombinasi depan-belakang maksimal 2.
+/* Dictionary Brute Force Hybrid Attack
+ * 
+ * Class implementasi untuk algoritma dictionary brute force hybrid attack
  */
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
+public class DictionaryBruteForce implements DictionaryAttack {
+    
+    private static final char[] CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*~-_+=/?.,<>\\|[]{}()".toCharArray();
 
-public class DictionaryBruteForce {
+    public String crackPassword(String hashedPassword, File dictionaryFile) throws IOException, NoSuchAlgorithmException {
 
-    PasswordHasher hashFunction;
+        System.out.println("Starting Brute Force Attack");
+        BufferedReader reader = new BufferedReader(new FileReader(dictionaryFile));
+        PasswordHasher passwordHasher = new PasswordHasher();
+        String word;
 
-    public DictionaryBruteForce() {
-        this.hashFunction = new PasswordHasher();
+        while ((word = reader.readLine()) != null) {
+            if (word.length() < 8 || word.length() > 16) continue; // Enforce password length constraint
+            for (String mutation : generateMutations(word)) {
+                if (passwordHasher.hashPassword(mutation).equals(hashedPassword)) {
+                    reader.close();
+                    return mutation;
+                }
+            }
+        }
+
+        reader.close();
+        return null;
+
     }
 
-    private static final int MAX_PASSWORD_LENGTH = 16;
-    private static final char[] charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*?><,.".toCharArray();
+    /* Brute Force Method */
 
-    public boolean crackPassword(String password) {
-        try (BufferedReader read = new BufferedReader(new FileReader("Dictionary.txt"))) {
-            String keyword;
-            while ((keyword = read.readLine()) != null) {
-            
-            // Append 4 characters X to front
-            // System.out.println("Append front...");
-            for (int i = 1; i <= 4; i++) {
-                if (appendFront(keyword, password, i)) {
-                    return true;
-                }
-            }
+    private List<String> generateMutations(String base) {
+        // String[] mutations = new String[CHARSET.length];
+        // for (int i = 0; i < CHARSET.length; i++) {
+        //     mutations[i] = base + CHARSET[i];
+        // }
 
-            // Append 4 characters X to end
-            // System.out.println("Append end...");
-            for (int i = 1; i <= 4; i++) {
-                if (appendEnd(keyword, password, i)) {
-                    return true;
-                }
-            }
+        List<String> mutations = new ArrayList<>();
+        mutations.add(base); // Original word
 
-            // Append 2 characters X to front and 2 characters X to end
-            // System.out.println("Append front & end...");
-            for (int i = 1; i <= 2; i++) {
-                if (appendFrontAndEnd(keyword, password, i)) {
-                    return true;
-                }
-            }
-
-            }
-        } catch (IOException e) {
-            System.out.println("Error reading dictionary file: " + e.getMessage());
+        // Add 1-3 characters in front
+        for (int i = 1; i <= 3; i++) {
+            System.out.println("Append " + i + "char(s) in front");
+            mutations.addAll(addCharactersAtPosition(base, i, true));
         }
 
-        return false;
+        // Add 1-3 characters at the end
+        for (int i = 1; i <= 3; i++) {
+            System.out.println("Append " + i + "char(s) in back");
+            mutations.addAll(addCharactersAtPosition(base, i, false));
+        }
+
+        // Add 1-2 characters at the front and 1-2 at the back
+        for (int i = 1; i <= 2; i++) {
+            for (int j = 1; j <= 2; j++) {
+                System.out.println("Append " + i + "char(s) in front and " + j + "char(s) in back");
+                mutations.addAll(addCharactersFrontAndBack(base, i, j));
+            }
+        }
+
+        System.out.println("End.");
+        return mutations;
     }
 
-    /* METHODS */
-    private boolean appendFront(String s, String pass, int limit) {
-        if (limit == 0) {
-            return false;
-        }
+    private List<String> addCharactersAtPosition(String base, int count, boolean addToFront) {
+        List<String> results = new ArrayList<>();
 
-        for (char c : charSet) {
-            String appended = c + s;
+        generateCombinations("", count, base, addToFront, results);
 
-            if (appended.length() <= MAX_PASSWORD_LENGTH) {
-                String hashedAppended = hashFunction.hashPassword(appended);
-                if (hashedAppended.equals(pass)) {
-                    return true;
-                }
-
-                if (appendFront(appended, pass, limit - 1)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return results;
     }
 
-    private boolean appendEnd(String s, String pass, int limit) {
-        if (limit == 0) {
-            return false;
+    private void generateCombinations(String current, int remaining, String base, boolean addToFront, List<String> results) {
+        if (remaining == 0) {
+            results.add(addToFront ? current + base : base + current);
+            return;
         }
 
-        for (char c : charSet) {
-            String appended = s + c;
-
-            if (appended.length() <= MAX_PASSWORD_LENGTH) {
-                String hashedAppended = hashFunction.hashPassword(appended);
-                if (hashedAppended.equals(pass)) {
-                    return true;
-                }
-
-                if (appendEnd(appended, pass, limit - 1)) {
-                    return true;
-                }
-            }
+        for (char c : CHARSET) {
+            generateCombinations(current + c, remaining - 1, base, addToFront, results);
         }
-
-        return false;
     }
 
-    private boolean appendFrontAndEnd(String s, String pass, int limit) {
-        if (limit == 0) {
-            return false;
-        }
+    private List<String> addCharactersFrontAndBack(String base, int frontCount, int backCount) {
+        // List<String> results = new ArrayList<>();
+        // List<String> frontCombinations = addCharactersAtPosition(base, frontCount, true);
 
-        for (char c1 : charSet) {
-            for (char c2 : charSet) {
-                String appended = c1 + s + c2;
+        // for (String frontMutated : frontCombinations) {
+        //     String pureBase = frontMutated.substring(frontCount); // Remove added front part
+        //     results.addAll(addCharactersAtPosition(pureBase, backCount, false));
+        // }
 
-                if (appended.length() <= MAX_PASSWORD_LENGTH) {
-                    String hashedAppended = hashFunction.hashPassword(appended);
-                    if (hashedAppended.equals(pass)) {
-                        return true;
-                    }
-
-                    if (appendFrontAndEnd(appended, pass, limit - 1)) {
-                        return true;
-                    }
-                }
+        List<String> results = new ArrayList<>();
+        List<String> frontCombinations = new ArrayList<>();
+        generateCombinations("", frontCount, "", true, frontCombinations);
+    
+        for (String front : frontCombinations) {
+            List<String> backCombinations = new ArrayList<>();
+            generateCombinations("", backCount, "", false, backCombinations);
+    
+            for (String back : backCombinations) {
+                results.add(front + base + back);
             }
         }
-
-        return false;
+    
+        return results;
+        
     }
+
 }

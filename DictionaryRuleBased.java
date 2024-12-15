@@ -1,437 +1,307 @@
-/*
+/* Dictionary Rule-Based Attack
  * Source: https://hashcat.net/wiki/doku.php?id=rule_based_attack
+ * 
+ * Class implementasi untuk algoritma dictionary rule based attack
  */
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DictionaryRuleBased {
+public class DictionaryRuleBased implements DictionaryAttack {
 
-    PasswordHasher hashFunction;
+    public String crackPassword(String hashedPassword, File dictionaryFile) throws IOException, NoSuchAlgorithmException {
 
-    public DictionaryRuleBased() {
-        this.hashFunction = new PasswordHasher();
-    }
+        System.out.println("Starting Rule-Based Attack");
+        BufferedReader reader = new BufferedReader(new FileReader(dictionaryFile));
+        PasswordHasher passwordHasher = new PasswordHasher();
+        String word;
 
-    /* VARIABLES */
-    private static final int MAX_PASSWORD_LENGTH = 16;
-    private static final char[] charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*?><,.".toCharArray();
-    private static final char[][] replacements = {
-        {'A', '4'}, {'a', '@'}, {'E', '3'}, {'O', '0'},
-        {'o', '0'}, {'i', '!'}, {'I', '1'}, {'t', '+'}
-    };
+        while ((word = reader.readLine()) != null) {
+            // Memastikan bahwa password yang diambil dari dictionary memiliki panjang 8 ~ 16 karakter saja
+            if (word.length() < 8 || word.length() > 16) continue;
 
-    public boolean crackPassword(String password) {
-        try (BufferedReader read = new BufferedReader(new FileReader("Dictionary.txt"))) {
-            String keyword;
-            while ((keyword = read.readLine()) != null) {
-                
-                // Do nothing (passthrough)
-                if (hashFunction.hashPassword(keyword).equals(password)) {
-                    return true;
-                }
-
-                // Lowercase all letters
-                if (hashFunction.hashPassword(keyword.toLowerCase()).equals(password)) {
-                    return true;
-                }
-
-                // Uppercase all letters
-                if (hashFunction.hashPassword(keyword.toUpperCase()).equals(password)) {
-                    return true;
-                }
-
-                // Capitalize the first letter and lower the rest
-                if (hashFunction.hashPassword(capitalizeFirstLetter(keyword)).equals(password)) {
-                    return true;
-                }
-
-                // Lower first found chacater, uppercase the rest
-                if (hashFunction.hashPassword(lowerFirstUpperRest(keyword)).equals(password)) {
-                    return true;
-                }
-
-                // Toggle the case of all characters in word (p@ssW0rd -> P@SSw0RD)
-                if (hashFunction.hashPassword(toggleCase(keyword)).equals(password)) {
-                    return true;
-                }
-                
-                // Toggle the case of characters at position N (N starts from 0) 
-                for (int i = 0; i < keyword.length(); i++) {
-                    if (hashFunction.hashPassword(toggleCaseAt(keyword, i)).equals(password)) {
-                        return true;
-                    }
-                }
-
-                // Reverse the entire word
-                if (hashFunction.hashPassword(reverseWord(keyword)).equals(password)) {
-                    return true;
-                }
-
-                // Duplicate entire word
-                if (hashFunction.hashPassword(duplicateWord(keyword)).equals(password)) {
-                    return true;
-                }
-
-                // Duplicate word reverse front (DrowssaPPassworD)
-                if (hashFunction.hashPassword(duplicateWordReverseFront(keyword)).equals(password)) {
-                    return true;
-                }
-                
-                // Duplicate word reverse end (PassworDDrowssaP)
-                if (hashFunction.hashPassword(duplicateWordReverseEnd(keyword)).equals(password)) {
-                    return true;
-                }
-
-                // Rotate the word left (p@ssW0rd -> @ssW0rdp)
-                if (hashFunction.hashPassword(rotateLeft(keyword)).equals(password)) {
-                    return true;
-                }
-
-                // Rotate the word right (p@ssW0rd -> dp@ssW0r)
-                if (hashFunction.hashPassword(rotateRight(keyword)).equals(password)) {
-                    return true;
-                }
-
-                // Append 4 characters X to front
-                for (int i = 1; i <= 4; i++) {
-                    if (appendFront(keyword, password, i)) {
-                        return true;
-                    }
-                }
-
-                // Append 4 characters X to end
-                for (int i = 1; i <= 4; i++) {
-                    if (appendEnd(keyword, password, i)) {
-                        return true;
-                    }
-                }
-
-                // Append 2 characters X to front and 2 characters X to end
-                for (int i = 1; i <= 2; i++) {
-                    if (appendFrontAndEnd(keyword, password, i)) {
-                        return true;
-                    }
-                }
-
-                // Delete first character
-                if (hashFunction.hashPassword(deleteFirstChar(keyword)).equals(password)) {
-                    return true;
-                }
-
-                // Delete last character
-                if (hashFunction.hashPassword(deleteLastChar(keyword)).equals(password)) {
-                    return true;
-                }
-
-                // Delete character at position N (N starts from 0)
-                for (int i = 0; i < keyword.length(); i++) {
-                    if (hashFunction.hashPassword(deleteCharAt(keyword, i)).equals(password)) {
-                        return true;
-                    }
-                }
-
-                // Overwrite character at position N with symbol
-                for (int i = 0; i < keyword.length(); i++) {
-                    if (hashFunction.hashPassword(overwriteCharToSymbol(keyword, i)).equals(password)) {
-                        return true;
-                    }
-                }
-
-                // Overwrite all possible characters with symbols
-                if (hashFunction.hashPassword(overwriteAllCharToSymbol(keyword)).equals(password)) {
-                    return true;
-                }
-
-                // Overwrite symbil at position N with character
-                for (int i = 0; i < keyword.length(); i++) {
-                    if (hashFunction.hashPassword(overwriteSymbolToChar(keyword, i)).equals(password)) {
-                        return true;
-                    }
-                }
-
-                // Overwrite all possible symbols with characters
-                if (hashFunction.hashPassword(overwriteAllSymbolToChar(keyword)).equals(password)) {
-                    return true;
-                }
-
-                // Swap front and back character
-                if (hashFunction.hashPassword(swapFrontAndBack(keyword)).equals(password)) {
-                    return true;
-                }
-
-                // Add more method?
-
-            }
-        } catch (IOException e) {
-            System.out.println("Error reading dictionary file: " + e.getMessage());
-        }
-
-        return false;
-    }
-
-    /* METHODS */
-
-    private String checkLength(String duplicate, String original) {
-        if (duplicate.length() <= MAX_PASSWORD_LENGTH) {
-            return duplicate;
-        }
-        else {
-            return original;
-        }
-    }
-
-    private String capitalizeFirstLetter(String s) {
-        if (s == null || s.isEmpty()) {
-            return s;
-        }
-        return s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase();
-    }
-
-    private String lowerFirstUpperRest(String s) {
-        if (s == null || s.isEmpty()) {
-            return s;
-        }
-        return s.substring(0,1).toLowerCase() + s.substring(1).toUpperCase();
-    }
-
-    private String toggleCase(String s) {
-        StringBuilder sb = new StringBuilder(s.length());
-
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-
-            if (Character.isLowerCase(c)) {
-                sb.append(Character.toUpperCase(c));
-            }
-            else {
-                sb.append(Character.toLowerCase(c));
-            }
-        }
-
-        return sb.toString();
-    }
-
-    private String toggleCaseAt(String s, int idx) {
-        char c = s.charAt(idx);
-        StringBuilder sb = new StringBuilder(s);
-
-        if (Character.isLowerCase(c)) {
-            sb.setCharAt(idx, Character.toUpperCase(c));
-        }
-        else { 
-            sb.setCharAt(idx, Character.toLowerCase(c));
-        }
-
-        return sb.toString();
-    }
-
-    private String reverseWord(String s) {
-        return new StringBuilder(s).reverse().toString();
-    }
-    
-    private String duplicateWord(String s) {
-        String duplicated = s + s;
-
-        return this.checkLength(duplicated, s);
-    }
-
-    private String duplicateWordReverseFront(String s) {
-        String duplicated = new StringBuilder(s).reverse().toString() + s;
-
-        return this.checkLength(duplicated, s);
-    }
-
-    private String duplicateWordReverseEnd(String s) {
-        String duplicated = s + new StringBuilder(s).reverse().toString();
-
-        return this.checkLength(duplicated, s);
-    }
-
-    private String rotateLeft(String s) {
-        return s.substring(1) + s.charAt(0);
-    }
-
-    private String rotateRight(String s) {
-        return s.charAt(s.length()-1) + s.substring(0, s.length()-1);
-    }
-
-    private boolean appendFront(String s, String pass, int limit) {
-        if (limit == 0) {
-            return false;
-        }
-
-        for (char c : charSet) {
-            String appended = c + s;
-
-            if (appended.length() <= MAX_PASSWORD_LENGTH) {
-                String hashedAppended = hashFunction.hashPassword(appended);
-                if (hashedAppended.equals(pass)) {
-                    return true;
-                }
-
-                if (appendFront(appended, pass, limit - 1)) {
-                    return true;
+            for (String mutation : generateMutations(word)) {
+                if (passwordHasher.hashPassword(mutation).equals(hashedPassword)) {
+                    reader.close();
+                    return mutation;
                 }
             }
         }
 
-        return false;
+        reader.close();
+        return null;
+
     }
 
-    private boolean appendEnd(String s, String pass, int limit) {
-        if (limit == 0) {
-            return false;
-        }
+    private List<String> generateMutations(String word) {
 
-        for (char c : charSet) {
-            String appended = s + c;
-
-            if (appended.length() <= MAX_PASSWORD_LENGTH) {
-                String hashedAppended = hashFunction.hashPassword(appended);
-                if (hashedAppended.equals(pass)) {
-                    return true;
-                }
-
-                if (appendEnd(appended, pass, limit - 1)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        List<String> mutations = new ArrayList<>();
+        System.out.println("Do nothing");
+        mutations.add(word);                    // Do nothing
+        System.out.println("To lower case");
+        mutations.add(word.toLowerCase());
+        System.out.println("To upper case");
+        mutations.add(word.toUpperCase());
+        System.out.println("Capitalized first");
+        mutations.add(capitalizeFirst(word));
+        System.out.println("Lower first upper rest");
+        mutations.add(lowerFirstUpperRest(word));
+        System.out.println("Toggle case");
+        mutations.add(toggleCase(word));
+        System.out.println("Reverse word");
+        mutations.add(reverse(word));
+        System.out.println("Duplicate word");
+        mutations.add(word + word);             // Duplicate
+        System.out.println("Duplicate reverse end");
+        mutations.add(word + reverse(word));    // Reverse end
+        System.out.println("Duplicate reverse front");
+        mutations.add(reverse(word) + word);    // Reverse front
+        System.out.println("Rotate left");
+        mutations.add(rotateLeft(word));
+        System.out.println("Rotate right");
+        mutations.add(rotateRight(word));
+        System.out.println("Delete first character");
+        mutations.add(deleteFirstChar(word));
+        System.out.println("Delete last character");
+        mutations.add(deleteLastChar(word));
+        System.out.println("Insert symbols");
+        mutations.addAll(insertSymbols(word));
+        System.out.println("Bitwise shift left");
+        mutations.add(bitwiseShiftLeft(word));
+        System.out.println("Bitwise shift right");
+        mutations.add(bitwiseShiftRight(word));
+        System.out.println("ASCII increment");
+        mutations.add(asciiIncrement(word));
+        System.out.println("ASCII decrement");
+        mutations.add(asciiDecrement(word));
+        System.out.println("Replace N +1");
+        mutations.add(replaceNPlusOne(word));
+        System.out.println("Replace N -1");
+        mutations.add(replaceNMinusOne(word));
+        System.out.println("Duplicate block front");
+        mutations.add(duplicateBlockFront(word));
+        System.out.println("Duplicate block back");
+        mutations.add(duplicateBlockBack(word));
+        System.out.println("Replace char with symbol");
+        mutations.add(replaceCharWithSymbol(word));
+        System.out.println("Replace symbol with char");
+        mutations.add(replaceSymbolWithChar(word));
+        System.out.println("Replace all with symbols");
+        mutations.addAll(replaceAllWithSymbol(word));
+        System.out.println("Replace all with characters");
+        mutations.addAll(replaceAllWithCharacter(word));
+        System.out.println("Replace char with symbol #2");
+        mutations.addAll(replaceCharacterWithSymbol(word));
+        System.out.println("Replace symbol with char #2");
+        mutations.addAll(replaceSymbolWithCharacter(word));
+        System.out.println("End.");
+        return mutations;
     }
 
-    private boolean appendFrontAndEnd(String s, String pass, int limit) {
-        if (limit == 0) {
-            return false;
-        }
+    /* Rule-Based Methods */
 
-        for (char c1 : charSet) {
-            for (char c2 : charSet) {
-                String appended = c1 + s + c2;
-
-                if (appended.length() <= MAX_PASSWORD_LENGTH) {
-                    String hashedAppended = hashFunction.hashPassword(appended);
-                    if (hashedAppended.equals(pass)) {
-                        return true;
-                    }
-
-                    if (appendFrontAndEnd(appended, pass, limit - 1)) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
+    private String capitalizeFirst(String word) {
+        return Character.toUpperCase(word.charAt(0)) + word.substring(1).toLowerCase();
     }
 
-    private String deleteFirstChar(String s) {
-        String deleted = s.substring(1);
-
-        if (deleted.length() < 8) {
-            return s;
-        }
-        else {
-            return deleted;
-        }
-    } 
-
-    private String deleteLastChar(String s) {
-        String deleted = s.substring(0, s.length()-1);
-
-        if (deleted.length() < 8) {
-            return s;
-        }
-        else {
-            return deleted;
-        }
+    private String lowerFirstUpperRest(String word) {
+        return Character.toLowerCase(word.charAt(0)) + word.substring(1).toUpperCase();
     }
 
-    private String deleteCharAt(String s, int idx) {
-        if (idx < 0 || idx >= s.length()) {
-            return s;
-        } 
-        
-        return s.substring(0, idx) + s.substring(idx + 1);
+    private String toggleCase(String word) {
+        StringBuilder toggled = new StringBuilder();
+        for (char c : word.toCharArray()) {
+            toggled.append(Character.isUpperCase(c) ? Character.toLowerCase(c) : Character.toUpperCase(c));
+        }
+        return toggled.toString();
     }
 
-    // [A, 4], [a, @], [E, 3], [O, 0], [o, 0], [i, !], [I, 1], [t, +]
-    private String overwriteCharToSymbol(String s, int idx) {
-        char[] chars = s.toCharArray();
+    private String reverse(String word) {
+        return new StringBuilder(word).reverse().toString();
+    }
 
-        if (idx >= 0 && idx < chars.length) {
-            char curr = chars[idx];
+    private String rotateLeft(String word) {
+        return word.substring(1) + word.charAt(0);
+    }
 
-            // Cek untuk setiap pair
-            for (char[] pair : replacements) {
-                if (pair[0] == curr) {
-                    chars[idx] = pair[1];
-                    break;
-                }
-            }
+    private String rotateRight(String word) {
+        return word.charAt(word.length() - 1) + word.substring(0, word.length() - 1);
+    }
+
+    private String deleteFirstChar(String word) {
+        return word.substring(1);
+    }
+
+    private String deleteLastChar(String word) {
+        return word.substring(0, word.length() - 1);
+    }
+
+    private List<String> insertSymbols(String word) {
+        String symbols = "!@#$%^&*~-_+=/?.,<>\\|[]{}()";
+        List<String> mutations = new ArrayList<>();
+
+        for (char symbol : symbols.toCharArray()) {
+            mutations.add(symbol + symbol + symbol + word);             // Triple front
+            mutations.add(word + symbol + symbol + symbol);             // Triple end
+            mutations.add(symbol + symbol + word + symbol + symbol);    // Double front and end
         }
 
+        return mutations;
+    }
+
+    private String bitwiseShiftLeft(String word) {
+        StringBuilder result = new StringBuilder();
+        for (char c : word.toCharArray()) {
+            result.append((char) (c << 1));
+        }
+        return result.toString();
+    }
+
+    private String bitwiseShiftRight(String word) {
+        StringBuilder result = new StringBuilder();
+        for (char c : word.toCharArray()) {
+            result.append((char) (c >> 1));
+        }
+        return result.toString();
+    }
+
+    private String asciiIncrement(String word) {
+        StringBuilder result = new StringBuilder();
+        for (char c : word.toCharArray()) {
+            result.append((char) (c + 1));
+        }
+        return result.toString();
+    }
+
+    private String asciiDecrement(String word) {
+        StringBuilder result = new StringBuilder();
+        for (char c : word.toCharArray()) {
+            result.append((char) (c - 1));
+        }
+        return result.toString();
+    }
+
+    private String replaceNPlusOne(String word) {
+        if (word.length() < 2) return word;
+        char[] chars = word.toCharArray();
+        for (int i = 0; i < word.length() - 1; i++) {
+            chars[i] = chars[i + 1];
+        }
         return new String(chars);
     }
 
-    private String overwriteAllCharToSymbol(String s) {
-        char[] chars = s.toCharArray();
+    private String replaceNMinusOne(String word) {
+        if (word.length() < 2) return word;
+        char[] chars = word.toCharArray();
+        for (int i = word.length() - 1; i > 0; i--) {
+            chars[i] = chars[i - 1];
+        }
+        return new String(chars);
+    }
 
+    private String duplicateBlockFront(String word) {
+        return word + word.substring(0, word.length() / 2);
+    }
+
+    private String duplicateBlockBack(String word) {
+        return word.substring(word.length() / 2) + word;
+    }
+
+    private String replaceCharWithSymbol(String word) {
+        String symbols = "!@#$%^&*~-_+=/?.,<>\\|[]{}()";
+        char[] chars = word.toCharArray();
         for (int i = 0; i < chars.length; i++) {
-            char curr = chars[i];
-
-            for (char[] pair : replacements) {
-                if (pair[0] == curr) {
-                    chars[i] = pair[1];
-                    break;
-                }
-            }
+            chars[i] = symbols.charAt(i % symbols.length());
         }
-
         return new String(chars);
     }
 
-    private String overwriteSymbolToChar(String s, int idx) {
-        char[] chars = s.toCharArray();
+    private String replaceSymbolWithChar(String word) {
+        StringBuilder result = new StringBuilder();
+        for (char c : word.toCharArray()) {
+            if (!Character.isLetterOrDigit(c)) {
+                result.append('x'); // Replace symbols with a generic char
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
+    }
 
-        if (idx >= 0 && idx < chars.length) {
-            char curr = chars[idx];
+    private List<String> replaceAllWithSymbol(String word) {
+        String symbols = "!@#$%^&*~-_+=/?.,<>\\|[]{}()";
+        List<String> mutations = new ArrayList<>();
 
-            // Cek untuk setiap pair
-            for (char[] pair : replacements) {
-                if (pair[1] == curr) {
-                    chars[idx] = pair[0];
-                    break;
-                }
+        for (char symbol : symbols.toCharArray()) {
+            mutations.add(String.valueOf(symbol).repeat(word.length()));
+        }
+
+        return mutations;
+    }
+
+    private List<String> replaceAllWithCharacter(String word) {
+        String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        List<String> mutations = new ArrayList<>();
+
+        for (char c : chars.toCharArray()) {
+            mutations.add(String.valueOf(c).repeat(word.length()));
+        }
+
+        return mutations;
+    }
+
+    private List<String> replaceSymbolWithCharacter(String word) {
+        // Mapping of symbols to interchangeable characters
+        String[][] symbolToCharMapping = {
+            {"@", "a"},
+            {"3", "e"},
+            {"1", "l"},
+            {"0", "o"},
+            {"$", "s"},
+            {"7", "t"},
+            {"+", "t"},
+            {"!", "i"}
+        };
+
+        List<String> mutations = new ArrayList<>();
+
+        for (String[] mapping : symbolToCharMapping) {
+            String symbol = mapping[0];
+            String character = mapping[1];
+            if (word.contains(symbol)) {
+                mutations.add(word.replace(symbol, character));
             }
         }
 
-        return new String(chars);
+        return mutations;
     }
 
-    private String overwriteAllSymbolToChar(String s) {
-        char[] chars = s.toCharArray();
+    // Reverse: Replace character with symbol
+    private List<String> replaceCharacterWithSymbol(String word) {
+        // Mapping of characters to interchangeable symbols
+        String[][] charToSymbolMapping = {
+            {"a", "@"},
+            {"e", "3"},
+            {"l", "1"},
+            {"o", "0"},
+            {"s", "$"},
+            {"t", "7"},
+            {"t", "+"},
+            {"i", "!"}
+        };
 
-        for (int i = 0; i < chars.length; i++) {
-            char curr = chars[i];
+        List<String> mutations = new ArrayList<>();
 
-            for (char[] pair : replacements) {
-                if (pair[1] == curr) {
-                    chars[i] = pair[0];
-                    break;
-                }
+        for (String[] mapping : charToSymbolMapping) {
+            String character = mapping[0];
+            String symbol = mapping[1];
+            if (word.contains(character)) {
+                mutations.add(word.replace(character, symbol));
             }
         }
 
-        return new String(chars);
+        return mutations;
     }
-
-    private String swapFrontAndBack(String s) {
-        String swap = s.charAt(s.length()-1) + s.substring(1, s.length()-1) + s.charAt(0);
-        return swap;
-    }
-
 }
