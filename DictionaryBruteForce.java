@@ -1,117 +1,120 @@
-/* Dictionary Brute Force Hybrid Attack
- * 
- * Class implementasi untuk algoritma dictionary brute force hybrid attack
- */
-
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DictionaryBruteForce implements DictionaryAttack {
-    
+
     private static final char[] CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*~-_+=/?.,<>\\|[]{}()".toCharArray();
 
     public String crackPassword(String hashedPassword, File dictionaryFile) throws IOException, NoSuchAlgorithmException {
-
         System.out.println("Starting Brute Force Attack");
         BufferedReader reader = new BufferedReader(new FileReader(dictionaryFile));
         PasswordHasher passwordHasher = new PasswordHasher();
         String word;
+        int counter = 1;
 
         while ((word = reader.readLine()) != null) {
             if (word.length() < 8 || word.length() > 16) continue; // Enforce password length constraint
-            for (String mutation : generateMutations(word)) {
-                if (passwordHasher.hashPassword(mutation).equals(hashedPassword)) {
+
+            System.out.println("Iterasi brute force ke-" + counter);
+
+            // Check original word
+            if (passwordHasher.hashPassword(word).equals(hashedPassword)) {
+                reader.close();
+                return word;
+            }
+
+            // Check mutations of the word
+            for (int i = 1; i <= 3; i++) {
+                // System.out.println("Append " + i + " char(s) in front");
+                if (checkMutations(word, i, true, hashedPassword, passwordHasher)) {
                     reader.close();
-                    return mutation;
+                    return word;
                 }
             }
+
+            for (int i = 1; i <= 3; i++) {
+                // System.out.println("Append " + i + " char(s) in back");
+                if (checkMutations(word, i, false, hashedPassword, passwordHasher)) {
+                    reader.close();
+                    return word;
+                }
+            }
+
+            for (int i = 1; i <= 2; i++) {
+                for (int j = 1; j <= 2; j++) {
+                    // System.out.println("Append " + i + " char(s) in front and " + j + " char(s) in back");
+                    if (checkFrontAndBackMutations(word, i, j, hashedPassword, passwordHasher)) {
+                        reader.close();
+                        return word;
+                    }
+                }
+            }
+
+            counter++;
         }
 
         reader.close();
         return null;
-
     }
 
-    /* Brute Force Method */
+    // Check mutations by appending characters at a position (front or back)
+    private boolean checkMutations(String base, int count, boolean addToFront, String hashedPassword, PasswordHasher passwordHasher) throws NoSuchAlgorithmException {
+        return generateCombinationsAndCheck("", count, base, addToFront, hashedPassword, passwordHasher);
+    }
 
-    private List<String> generateMutations(String base) {
-        // String[] mutations = new String[CHARSET.length];
-        // for (int i = 0; i < CHARSET.length; i++) {
-        //     mutations[i] = base + CHARSET[i];
-        // }
+    // Optimized check for front and back mutations
+    private boolean checkFrontAndBackMutations(String base, int frontCount, int backCount, String hashedPassword, PasswordHasher passwordHasher) throws NoSuchAlgorithmException {
+        // Generate combinations for front and back separately
+        String[] frontCombinations = generateCombinations(frontCount, true);
+        String[] backCombinations = generateCombinations(backCount, false);
 
-        List<String> mutations = new ArrayList<>();
-        mutations.add(base); // Original word
-
-        // Add 1-3 characters in front
-        for (int i = 1; i <= 3; i++) {
-            System.out.println("Append " + i + "char(s) in front");
-            mutations.addAll(addCharactersAtPosition(base, i, true));
-        }
-
-        // Add 1-3 characters at the end
-        for (int i = 1; i <= 3; i++) {
-            System.out.println("Append " + i + "char(s) in back");
-            mutations.addAll(addCharactersAtPosition(base, i, false));
-        }
-
-        // Add 1-2 characters at the front and 1-2 at the back
-        for (int i = 1; i <= 2; i++) {
-            for (int j = 1; j <= 2; j++) {
-                System.out.println("Append " + i + "char(s) in front and " + j + "char(s) in back");
-                mutations.addAll(addCharactersFrontAndBack(base, i, j));
+        // Now combine the front and back combinations and check for hash match
+        for (String front : frontCombinations) {
+            for (String back : backCombinations) {
+                String mutated = front + base + back;
+                if (passwordHasher.hashPassword(mutated).equals(hashedPassword)) {
+                    return true;
+                }
             }
         }
-
-        System.out.println("End.");
-        return mutations;
+        return false;
     }
 
-    private List<String> addCharactersAtPosition(String base, int count, boolean addToFront) {
-        List<String> results = new ArrayList<>();
+    // Generate all possible combinations of characters of a given length (for front or back part)
+    private String[] generateCombinations(int length, boolean isFront) {
+        // Total combinations = CHARSET.length^length
+        int totalCombinations = (int) Math.pow(CHARSET.length, length);
+        String[] combinations = new String[totalCombinations];
 
-        generateCombinations("", count, base, addToFront, results);
+        // Loop through all possible combinations
+        for (int i = 0; i < totalCombinations; i++) {
+            StringBuilder combination = new StringBuilder();
+            int temp = i;
+            for (int j = 0; j < length; j++) {
+                combination.insert(isFront ? 0 : combination.length(), CHARSET[temp % CHARSET.length]);
+                temp /= CHARSET.length;
+            }
+            combinations[i] = combination.toString();
+        }
 
-        return results;
+        return combinations;
     }
 
-    private void generateCombinations(String current, int remaining, String base, boolean addToFront, List<String> results) {
+    // Generate combinations of characters and immediately check if the mutated word's hash matches the target hash
+    private boolean generateCombinationsAndCheck(String current, int remaining, String base, boolean addToFront, String hashedPassword, PasswordHasher passwordHasher) throws NoSuchAlgorithmException {
         if (remaining == 0) {
-            results.add(addToFront ? current + base : base + current);
-            return;
+            String mutated = addToFront ? current + base : base + current;
+            if (passwordHasher.hashPassword(mutated).equals(hashedPassword)) {
+                return true;
+            }
+            return false;
         }
 
         for (char c : CHARSET) {
-            generateCombinations(current + c, remaining - 1, base, addToFront, results);
-        }
-    }
-
-    private List<String> addCharactersFrontAndBack(String base, int frontCount, int backCount) {
-        // List<String> results = new ArrayList<>();
-        // List<String> frontCombinations = addCharactersAtPosition(base, frontCount, true);
-
-        // for (String frontMutated : frontCombinations) {
-        //     String pureBase = frontMutated.substring(frontCount); // Remove added front part
-        //     results.addAll(addCharactersAtPosition(pureBase, backCount, false));
-        // }
-
-        List<String> results = new ArrayList<>();
-        List<String> frontCombinations = new ArrayList<>();
-        generateCombinations("", frontCount, "", true, frontCombinations);
-    
-        for (String front : frontCombinations) {
-            List<String> backCombinations = new ArrayList<>();
-            generateCombinations("", backCount, "", false, backCombinations);
-    
-            for (String back : backCombinations) {
-                results.add(front + base + back);
+            if (generateCombinationsAndCheck(current + c, remaining - 1, base, addToFront, hashedPassword, passwordHasher)) {
+                return true;
             }
         }
-    
-        return results;
-        
+        return false;
     }
-
 }
