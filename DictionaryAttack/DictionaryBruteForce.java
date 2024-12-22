@@ -1,3 +1,4 @@
+package DictionaryAttack;
 /* Dictionary Brute Force Hybrid Attack
  * 
  * Class implementasi untuk algoritma dictionary brute force hybrid attack
@@ -9,6 +10,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+
+import PasswordHash.PasswordHasher;
 
 public class DictionaryBruteForce implements DictionaryAttack {
 

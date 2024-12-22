@@ -1,3 +1,5 @@
+package DictionaryAttack;
+
 /* Interface DictionaryAttack
  * 
  * Hanya untuk memastikan bahwa kedua algoritma attack berasal dari dictionary attack
