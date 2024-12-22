@@ -1,9 +1,10 @@
-package PasswordHash;
 /* Hashed Password Generator
  * 
  * Class sementara yang akan digunakan untuk melakukan enkripsi password string ke hashed password dengan SHA-256
  * OutputFile akan selalu di overwrite setiap kali melakukan run (menghindari adanya hashedPassword yang tertinggal ketika list password diganti)
  */
+
+package PasswordHash;
 
 import java.io.*;
 import java.security.NoSuchAlgorithmException;

@@ -1,9 +1,9 @@
-package DictionaryAttack;
-
 /* Interface DictionaryAttack
  * 
  * Hanya untuk memastikan bahwa kedua algoritma attack berasal dari dictionary attack
  */
+
+package DictionaryAttack;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,8 +1,9 @@
-package PasswordHash;
 /* Password Hasher
  * 
  * Class yang akan melakukan hash untuk password menggunakan algoritma SHA-256
  */
+
+package PasswordHash;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
