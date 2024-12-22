@@ -1,3 +1,4 @@
+package PasswordHash;
 /* Hashed Password Generator
  * 
  * Class sementara yang akan digunakan untuk melakukan enkripsi password string ke hashed password dengan SHA-256

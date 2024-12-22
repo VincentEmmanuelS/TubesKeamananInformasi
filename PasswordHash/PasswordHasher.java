@@ -1,3 +1,4 @@
+package PasswordHash;
 /* Password Hasher
  * 
  * Class yang akan melakukan hash untuk password menggunakan algoritma SHA-256

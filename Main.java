@@ -10,11 +10,14 @@ import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutionException;
 
+import DictionaryAttack.DictionaryBruteForce;
+import DictionaryAttack.DictionaryRuleBased;
+
 public class Main {
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException, InterruptedException, ExecutionException {
 
         // Input berupa hashed password dari file txt
-        File hashedPasswordFile = new File("HashedPassword.txt");
+        File hashedPasswordFile = new File("PasswordHash/HashedPassword.txt");
         BufferedReader hashReader = new BufferedReader(new FileReader(hashedPasswordFile));
 
         // Load dictionary

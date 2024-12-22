@@ -1,3 +1,4 @@
+package DictionaryAttack;
 /* Dictionary Rule-Based Attack
  * Source: https://hashcat.net/wiki/doku.php?id=rule_based_attack
  * 
@@ -8,6 +9,8 @@ import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+
+import PasswordHash.PasswordHasher;
 
 public class DictionaryRuleBased implements DictionaryAttack {
 
