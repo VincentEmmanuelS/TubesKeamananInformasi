@@ -8,9 +8,10 @@
 
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.ExecutionException;
 
 public class Main {
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException, InterruptedException, ExecutionException {
 
         // Input berupa hashed password dari file txt
         File hashedPasswordFile = new File("HashedPassword.txt");
@@ -30,8 +31,11 @@ public class Main {
 
         String hashedPassword;
         String status;          // Later will be used as counter for success rate %
-        System.out.println("Program is running");
+        System.out.println("-- Program is running --\n");
+        int counter = 1;
         while ((hashedPassword = hashReader.readLine()) != null) {
+
+            System.out.println("> Attacking #" + counter + " password\n");
 
             // Start dictionary rule-based attack
             long startTime = System.nanoTime();
