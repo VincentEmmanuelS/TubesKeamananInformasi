@@ -46,65 +46,168 @@ public class DictionaryRuleBased implements DictionaryAttack {
     private List<String> generateMutations(String word) {
 
         List<String> mutations = new ArrayList<>();
-        // System.out.println("Do nothing");
-        mutations.add(word);                    // Do nothing
-        // System.out.println("To lower case");
-        mutations.add(word.toLowerCase());
-        // System.out.println("To upper case");
-        mutations.add(word.toUpperCase());
-        // System.out.println("Capitalized first");
-        mutations.add(capitalizeFirst(word));
-        // System.out.println("Lower first upper rest");
-        mutations.add(lowerFirstUpperRest(word));
-        // System.out.println("Toggle case");
-        mutations.add(toggleCase(word));
-        // System.out.println("Reverse word");
-        mutations.add(reverse(word));
-        // System.out.println("Duplicate word");
-        mutations.add(word + word);             // Duplicate
-        // System.out.println("Duplicate reverse end");
-        mutations.add(word + reverse(word));    // Reverse end
-        // System.out.println("Duplicate reverse front");
-        mutations.add(reverse(word) + word);    // Reverse front
-        // System.out.println("Rotate left");
-        mutations.add(rotateLeft(word));
-        // System.out.println("Rotate right");
-        mutations.add(rotateRight(word));
-        // System.out.println("Delete first character");
-        mutations.add(deleteFirstChar(word));
-        // System.out.println("Delete last character");
-        mutations.add(deleteLastChar(word));
-        // System.out.println("Insert symbols");
-        mutations.addAll(insertSymbols(word));
-        // System.out.println("Bitwise shift left");
-        mutations.add(bitwiseShiftLeft(word));
-        // System.out.println("Bitwise shift right");
-        mutations.add(bitwiseShiftRight(word));
-        // System.out.println("ASCII increment");
-        mutations.add(asciiIncrement(word));
-        // System.out.println("ASCII decrement");
-        mutations.add(asciiDecrement(word));
-        // System.out.println("Replace N +1");
-        mutations.add(replaceNPlusOne(word));
-        // System.out.println("Replace N -1");
-        mutations.add(replaceNMinusOne(word));
-        // System.out.println("Duplicate block front");
-        mutations.add(duplicateBlockFront(word));
-        // System.out.println("Duplicate block back");
-        mutations.add(duplicateBlockBack(word));
-        // System.out.println("Replace char with symbol");
-        mutations.add(replaceCharWithSymbol(word));
-        // System.out.println("Replace symbol with char");
-        mutations.add(replaceSymbolWithChar(word));
-        // System.out.println("Replace all with symbols");
-        mutations.addAll(replaceAllWithSymbol(word));
-        // System.out.println("Replace all with characters");
-        mutations.addAll(replaceAllWithCharacter(word));
-        // System.out.println("Replace char with symbol #2");
-        mutations.addAll(replaceCharacterWithSymbol(word));
-        // System.out.println("Replace symbol with char #2");
-        mutations.addAll(replaceSymbolWithCharacter(word));
+
+        /* Original Word Mutations */
+        mutations.add(word);                        // Do nothing
+        mutations.add(word.toLowerCase());          // To lower case
+        mutations.add(word.toUpperCase());          // To upper case
+        mutations.add(capitalizeFirst(word));       // Capitalize first
+        mutations.add(lowerFirstUpperRest(word));   // Lower first, uppercase the rest
+        mutations.add(toggleCase(word));            // Toggle case
+        mutations.add(reverse(word));               // Reverse
+        mutations.add(word + word);                 // Duplicate
+        mutations.add(word + reverse(word));        // Reverse end
+        mutations.add(reverse(word) + word);        // Reverse front
+        mutations.add(rotateLeft(word));            // Rotate left
+        mutations.add(rotateRight(word));           // Rotate right
+        mutations.add(deleteFirstChar(word));       // Delete first char
+        mutations.add(deleteLastChar(word));        // Delete last char
+
+        /* Mutations with Symbols and Bitwise Operations */
+        mutations.addAll(insertSymbols(word));      // Insert symbols
+        mutations.add(bitwiseShiftLeft(word));      // Bitwise shift left
+        mutations.add(bitwiseShiftRight(word));     // Bitwire shift right
+        mutations.add(asciiIncrement(word));        // ASCII increment
+        mutations.add(asciiDecrement(word));        // ASCII decrement
+
+        /* Character Replacements */
+        mutations.add(replaceNPlusOne(word));               // Replace char n+1
+        mutations.add(replaceNMinusOne(word));              // Replace char n-1
+        mutations.add(duplicateBlockFront(word));           // Duplicate block front
+        mutations.add(duplicateBlockBack(word));            // Duplicate block back
+        mutations.add(replaceCharWithSymbol(word));         // Replace char with symbol
+        mutations.add(replaceSymbolWithChar(word));         // Replace symbol with char
+        mutations.addAll(replaceAllWithSymbol(word));       // Replace all chars with symbols
+        mutations.addAll(replaceAllWithCharacter(word));    // Replace all chars with other char
+        mutations.addAll(replaceCharacterWithSymbol(word)); // Replace char with symbol
+        mutations.addAll(replaceSymbolWithCharacter(word)); // Replace symbol with char 
+
+        /* Mutation Combinations */
+        mutations.addAll(combineMutations(word));
+
         return mutations;
+    }
+
+    /* Mutation Combinations */
+
+    private List<String> combineMutations(String word) {
+        List<String> combinedMutations = new ArrayList<>();
+
+        // Capitalize First + Other Mutations
+        combinedMutations.add(capitalizeFirst(word) + reverse(word));
+        combinedMutations.add(capitalizeFirst(word) + rotateLeft(word));
+        combinedMutations.add(capitalizeFirst(word) + rotateRight(word));
+        combinedMutations.add(capitalizeFirst(word) + deleteFirstChar(word));
+        combinedMutations.add(capitalizeFirst(word) + deleteLastChar(word));
+        combinedMutations.add(capitalizeFirst(word) + insertSymbols(word));
+        combinedMutations.add(capitalizeFirst(word) + bitwiseShiftLeft(word));
+        combinedMutations.add(capitalizeFirst(word) + bitwiseShiftRight(word));
+        combinedMutations.add(capitalizeFirst(word) + asciiIncrement(word));
+        combinedMutations.add(capitalizeFirst(word) + asciiDecrement(word));
+        combinedMutations.add(capitalizeFirst(word) + replaceNPlusOne(word));
+        combinedMutations.add(capitalizeFirst(word) + replaceNMinusOne(word));
+        combinedMutations.add(capitalizeFirst(word) + duplicateBlockFront(word));
+        combinedMutations.add(capitalizeFirst(word) + duplicateBlockBack(word));
+        combinedMutations.add(capitalizeFirst(word) + replaceCharWithSymbol(word));
+        combinedMutations.add(capitalizeFirst(word) + replaceSymbolWithChar(word));
+        combinedMutations.add(capitalizeFirst(word) + replaceAllWithSymbol(word));
+        combinedMutations.add(capitalizeFirst(word) + replaceAllWithCharacter(word));
+
+        // Lowercase First Upper Rest + Other Mutations
+        combinedMutations.add(lowerFirstUpperRest(word) + reverse(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + rotateLeft(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + rotateRight(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + deleteFirstChar(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + deleteLastChar(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + insertSymbols(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + bitwiseShiftLeft(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + bitwiseShiftRight(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + asciiIncrement(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + asciiDecrement(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + replaceNPlusOne(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + replaceNMinusOne(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + duplicateBlockFront(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + duplicateBlockBack(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + replaceCharWithSymbol(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + replaceSymbolWithChar(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + replaceAllWithSymbol(word));
+        combinedMutations.add(lowerFirstUpperRest(word) + replaceAllWithCharacter(word));
+
+        // Toggle Case + Other Mutations
+        combinedMutations.add(toggleCase(word) + reverse(word));
+        combinedMutations.add(toggleCase(word) + rotateLeft(word));
+        combinedMutations.add(toggleCase(word) + rotateRight(word));
+        combinedMutations.add(toggleCase(word) + deleteFirstChar(word));
+        combinedMutations.add(toggleCase(word) + deleteLastChar(word));
+        combinedMutations.add(toggleCase(word) + insertSymbols(word));
+        combinedMutations.add(toggleCase(word) + bitwiseShiftLeft(word));
+        combinedMutations.add(toggleCase(word) + bitwiseShiftRight(word));
+        combinedMutations.add(toggleCase(word) + asciiIncrement(word));
+        combinedMutations.add(toggleCase(word) + asciiDecrement(word));
+        combinedMutations.add(toggleCase(word) + replaceNPlusOne(word));
+        combinedMutations.add(toggleCase(word) + replaceNMinusOne(word));
+        combinedMutations.add(toggleCase(word) + duplicateBlockFront(word));
+        combinedMutations.add(toggleCase(word) + duplicateBlockBack(word));
+        combinedMutations.add(toggleCase(word) + replaceCharWithSymbol(word));
+        combinedMutations.add(toggleCase(word) + replaceSymbolWithChar(word));
+        combinedMutations.add(toggleCase(word) + replaceAllWithSymbol(word));
+        combinedMutations.add(toggleCase(word) + replaceAllWithCharacter(word));
+
+        // Reverse + Other Mutations
+        combinedMutations.add(reverse(word) + rotateLeft(word));
+        combinedMutations.add(reverse(word) + rotateRight(word));
+        combinedMutations.add(reverse(word) + deleteFirstChar(word));
+        combinedMutations.add(reverse(word) + deleteLastChar(word));
+        combinedMutations.add(reverse(word) + insertSymbols(word));
+        combinedMutations.add(reverse(word) + bitwiseShiftLeft(word));
+        combinedMutations.add(reverse(word) + bitwiseShiftRight(word));
+        combinedMutations.add(reverse(word) + asciiIncrement(word));
+        combinedMutations.add(reverse(word) + asciiDecrement(word));
+        combinedMutations.add(reverse(word) + replaceNPlusOne(word));
+        combinedMutations.add(reverse(word) + replaceNMinusOne(word));
+        combinedMutations.add(reverse(word) + duplicateBlockFront(word));
+        combinedMutations.add(reverse(word) + duplicateBlockBack(word));
+        combinedMutations.add(reverse(word) + replaceCharWithSymbol(word));
+        combinedMutations.add(reverse(word) + replaceSymbolWithChar(word));
+        combinedMutations.add(reverse(word) + replaceAllWithSymbol(word));
+        combinedMutations.add(reverse(word) + replaceAllWithCharacter(word));
+
+        // Rotate Left + Other Mutations
+        combinedMutations.add(rotateLeft(word) + rotateRight(word));
+        combinedMutations.add(rotateLeft(word) + deleteFirstChar(word));
+        combinedMutations.add(rotateLeft(word) + deleteLastChar(word));
+        combinedMutations.add(rotateLeft(word) + insertSymbols(word));
+        combinedMutations.add(rotateLeft(word) + bitwiseShiftLeft(word));
+        combinedMutations.add(rotateLeft(word) + bitwiseShiftRight(word));
+        combinedMutations.add(rotateLeft(word) + asciiIncrement(word));
+        combinedMutations.add(rotateLeft(word) + asciiDecrement(word));
+        combinedMutations.add(rotateLeft(word) + replaceNPlusOne(word));
+        combinedMutations.add(rotateLeft(word) + replaceNMinusOne(word));
+        combinedMutations.add(rotateLeft(word) + duplicateBlockFront(word));
+        combinedMutations.add(rotateLeft(word) + duplicateBlockBack(word));
+        combinedMutations.add(rotateLeft(word) + replaceCharWithSymbol(word));
+        combinedMutations.add(rotateLeft(word) + replaceSymbolWithChar(word));
+        combinedMutations.add(rotateLeft(word) + replaceAllWithSymbol(word));
+        combinedMutations.add(rotateLeft(word) + replaceAllWithCharacter(word));
+
+        // Rotate Right + Other Mutations
+        combinedMutations.add(rotateRight(word) + deleteFirstChar(word));
+        combinedMutations.add(rotateRight(word) + deleteLastChar(word));
+        combinedMutations.add(rotateRight(word) + insertSymbols(word));
+        combinedMutations.add(rotateRight(word) + bitwiseShiftLeft(word));
+        combinedMutations.add(rotateRight(word) + bitwiseShiftRight(word));
+        combinedMutations.add(rotateRight(word) + asciiIncrement(word));
+        combinedMutations.add(rotateRight(word) + asciiDecrement(word));
+        combinedMutations.add(rotateRight(word) + replaceNPlusOne(word));
+        combinedMutations.add(rotateRight(word) + replaceNMinusOne(word));
+        combinedMutations.add(rotateRight(word) + duplicateBlockFront(word));
+        combinedMutations.add(rotateRight(word) + duplicateBlockBack(word));
+        combinedMutations.add(rotateRight(word) + replaceCharWithSymbol(word));
+        combinedMutations.add(rotateRight(word) + replaceSymbolWithChar(word));
+        combinedMutations.add(rotateRight(word) + replaceAllWithSymbol(word));
+        combinedMutations.add(rotateRight(word) + replaceAllWithCharacter(word));
+
+        return combinedMutations;
     }
 
     /* Rule-Based Methods */

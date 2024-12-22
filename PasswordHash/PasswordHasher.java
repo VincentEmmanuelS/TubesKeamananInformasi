@@ -4,6 +4,7 @@ package PasswordHash;
  * Class yang akan melakukan hash untuk password menggunakan algoritma SHA-256
  */
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -12,7 +13,7 @@ public class PasswordHasher {
     public String hashPassword(String password) throws NoSuchAlgorithmException {
         
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hash = digest.digest(password.getBytes());
+        byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
         StringBuilder hexString = new StringBuilder();
 
         for (byte b : hash) {

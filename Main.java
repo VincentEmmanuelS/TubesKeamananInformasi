@@ -7,6 +7,7 @@
  */
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutionException;
 
@@ -17,8 +18,10 @@ public class Main {
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException, InterruptedException, ExecutionException {
 
         // Input berupa hashed password dari file txt
-        File hashedPasswordFile = new File("PasswordHash/HashedPassword.txt");
-        BufferedReader hashReader = new BufferedReader(new FileReader(hashedPasswordFile));
+        File hashedPasswordFile = new File("./HashedPassword.txt");
+        // BufferedReader hashReader = new BufferedReader(new FileReader(hashedPasswordFile));
+        BufferedReader hashReader = new BufferedReader(new InputStreamReader(new FileInputStream(hashedPasswordFile), StandardCharsets.UTF_8));
+
 
         // Load dictionary
         File dictionaryFile = new File("Dictionary.txt");
@@ -36,6 +39,7 @@ public class Main {
         String status;          // Later will be used as counter for success rate %
         System.out.println("-- Program is running --");
         int counter = 1;
+
         while ((hashedPassword = hashReader.readLine()) != null) {
 
             System.out.println("\n> Attacking #" + counter + " password\n");
