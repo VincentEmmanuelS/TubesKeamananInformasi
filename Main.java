@@ -34,11 +34,11 @@ public class Main {
 
         String hashedPassword;
         String status;          // Later will be used as counter for success rate %
-        System.out.println("-- Program is running --\n");
+        System.out.println("-- Program is running --");
         int counter = 1;
         while ((hashedPassword = hashReader.readLine()) != null) {
 
-            System.out.println("> Attacking #" + counter + " password\n");
+            System.out.println("\n> Attacking #" + counter + " password\n");
 
             // Start dictionary rule-based attack
             long startTime = System.nanoTime();
@@ -66,6 +66,8 @@ public class Main {
             writer.write("[status: " + status + "] " + "Result: " + (bruteForceResult != null ? bruteForceResult : "-") + " | Time: " + bruteForceTime / 1_000_000_000 + "s (" + bruteForceTime / 1_000_000 + " ms)\n\n");
 
         }
+
+        System.out.println("\n-- Program finished running --");
 
         // Close streams
         hashReader.close();

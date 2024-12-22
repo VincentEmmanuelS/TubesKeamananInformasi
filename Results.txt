@@ -1,0 +1,6 @@
+Hashed Password: bce710203e820f9a0757c7f91ee96cc3f243458e723824d6547a014a3b8edc5e
+Dictionary Rule-Based Attack:
+[status: failed] Result: - | Time: 0s (37 ms)
+Brute Force Hybrid Attack:
+[status: failed] Result: - | Time: 47s (47005 ms)
+
