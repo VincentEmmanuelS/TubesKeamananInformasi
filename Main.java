@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException, InterruptedException, ExecutionException {
 
         // Input berupa hashed password dari file txt
-        File hashedPasswordFile = new File("./HashedPassword.txt");
+        File hashedPasswordFile = new File("HashedPassword.txt");
         // BufferedReader hashReader = new BufferedReader(new FileReader(hashedPasswordFile));
         BufferedReader hashReader = new BufferedReader(new InputStreamReader(new FileInputStream(hashedPasswordFile), StandardCharsets.UTF_8));
 
