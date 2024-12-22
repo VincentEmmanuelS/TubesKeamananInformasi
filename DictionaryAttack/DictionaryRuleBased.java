@@ -19,6 +19,7 @@ public class DictionaryRuleBased implements DictionaryAttack {
     public String crackPassword(String hashedPassword, File dictionaryFile) throws IOException, NoSuchAlgorithmException {
 
         System.out.println(" > Starting Rule-Based Attack");
+        count = 1;
         BufferedReader reader = new BufferedReader(new FileReader(dictionaryFile));
         PasswordHasher passwordHasher = new PasswordHasher();
         String word;

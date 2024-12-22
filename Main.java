@@ -43,6 +43,7 @@ public class Main {
         while ((hashedPassword = hashReader.readLine()) != null) {
 
             System.out.println("\n> Attacking #" + counter + " password\n");
+            counter++;
 
             // Start dictionary rule-based attack
             long startTime = System.nanoTime();

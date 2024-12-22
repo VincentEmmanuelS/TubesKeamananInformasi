@@ -1,9 +1,4 @@
 package DictionaryAttack;
-/* Dictionary Brute Force Hybrid Attack
- * 
- * Class implementasi untuk algoritma dictionary brute force hybrid attack
- * Brute force dictionary and toggled dictionary
- */
 
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
@@ -17,7 +12,6 @@ public class DictionaryBruteForce implements DictionaryAttack {
 
     private static final char[] CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*~-_+=/?.,<>\\|[]{}()".toCharArray();
 
-    // Crack the password using a brute force approach with a dictionary
     public String crackPassword(String hashedPassword, File dictionaryFile) throws IOException, NoSuchAlgorithmException, InterruptedException, ExecutionException {
 
         System.out.println("\n > Starting Brute Force Attack");
@@ -27,135 +21,127 @@ public class DictionaryBruteForce implements DictionaryAttack {
         int counter = 1;
 
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        List<Future<String>> results = new ArrayList<>();
 
         while ((word = reader.readLine()) != null) {
-            if (word.length() < 8 || word.length() > 16) continue; // Enforce password length constraint
+            if (word.length() < 8 || word.length() > 16) continue;
 
             System.out.println("  >> Brute Force attempt #" + counter);
+            final String finalWord = word;
 
-            // Create tasks for checking the word and mutations in parallel
-            List<Callable<String>> tasks = new ArrayList<>();
-            final String finalWord = word; 
-            tasks.add(() -> checkPassword(finalWord, hashedPassword, passwordHasher));
-            tasks.add(() -> checkPassword(toggleFirstCharCase(finalWord), hashedPassword, passwordHasher));
-
-            // Check mutations in parallel as well
-            for (int i = 1; i <= 3; i++) {
-                final int finalI = i;
-                tasks.add(() -> checkMutations(finalWord, finalI, true, hashedPassword, passwordHasher));
-                tasks.add(() -> checkMutations(finalWord, finalI, false, hashedPassword, passwordHasher));
-            }
-
-            for (int i = 1; i <= 2; i++) {
-                for (int j = 1; j <= 2; j++) {
-                    final int finalI = i;
-                    final int finalJ = j;
-                    tasks.add(() -> checkFrontAndBackMutations(finalWord, finalI, finalJ, hashedPassword, passwordHasher));
-                }
-            }
-
-            // Execute all tasks and check for a match
-            List<Future<String>> results = executorService.invokeAll(tasks);
-            for (Future<String> result : results) {
-                String matchedWord = result.get();
-                if (matchedWord != null) {
-                    reader.close();
-                    executorService.shutdown();
-                    return matchedWord;
-                }
-            }
+            // Submit combined tasks to minimize overhead
+            results.add(executorService.submit(() -> processWord(finalWord, hashedPassword, passwordHasher)));
 
             counter++;
         }
 
         reader.close();
+
+        // Process results
+        for (Future<String> result : results) {
+            String matchedWord = result.get();
+            if (matchedWord != null) {
+                executorService.shutdown();
+                return matchedWord;
+            }
+        }
+
         executorService.shutdown();
         return null;
     }
 
-    // Check if the password matches the hashed password
-    private String checkPassword(String word, String hashedPassword, PasswordHasher passwordHasher) throws NoSuchAlgorithmException {
-        if (word != null && passwordHasher.hashPassword(word).equals(hashedPassword)) {
+    private String processWord(String word, String hashedPassword, PasswordHasher passwordHasher) throws NoSuchAlgorithmException {
+        // Check the base word
+        if (checkPassword(word, hashedPassword, passwordHasher) != null) {
             return word;
         }
+
+        // Check toggled case of the first character
+        String toggledWord = toggleFirstCharCase(word);
+        if (toggledWord != null && checkPassword(toggledWord, hashedPassword, passwordHasher) != null) {
+            return toggledWord;
+        }
+
+        // Check mutations
+        for (int i = 1; i <= 3; i++) {
+            if (checkMutations(word, i, true, hashedPassword, passwordHasher) != null ||
+                checkMutations(word, i, false, hashedPassword, passwordHasher) != null) {
+                return word;
+            }
+        }
+
+        // Check front and back mutations
+        for (int i = 1; i <= 2; i++) {
+            for (int j = 1; j <= 2; j++) {
+                if (checkFrontAndBackMutations(word, i, j, hashedPassword, passwordHasher) != null) {
+                    return word;
+                }
+            }
+        }
+
         return null;
     }
 
-    // Toggle the first character's case and return the modified word
+    private String checkPassword(String word, String hashedPassword, PasswordHasher passwordHasher) throws NoSuchAlgorithmException {
+        return passwordHasher.hashPassword(word).equals(hashedPassword) ? word : null;
+    }
+
     private String toggleFirstCharCase(String word) {
         if (word == null || word.isEmpty()) return null;
 
         char firstChar = word.charAt(0);
-        char toggledChar;
-
-        if (Character.isLowerCase(firstChar)) {
-            toggledChar = Character.toUpperCase(firstChar);
-        } else if (Character.isUpperCase(firstChar)) {
-            toggledChar = Character.toLowerCase(firstChar);
-        } else {
-            return null; // No toggle case possible for non-alphabetic characters
-        }
+        char toggledChar = Character.isLowerCase(firstChar) ? Character.toUpperCase(firstChar)
+                              : Character.isUpperCase(firstChar) ? Character.toLowerCase(firstChar)
+                              : firstChar;
 
         return toggledChar + word.substring(1);
     }
 
-    // Check mutations of the word by adding characters to front or back
     private String checkMutations(String base, int count, boolean addToFront, String hashedPassword, PasswordHasher passwordHasher) throws NoSuchAlgorithmException {
-        if (generateCombinationsAndCheck("", count, base, addToFront, hashedPassword, passwordHasher)) {
-            return base;  // Return the mutated base if found
+        return generateCombinationsAndCheck(new StringBuilder(), count, base, addToFront, hashedPassword, passwordHasher) ? base : null;
+    }
+
+    private String checkFrontAndBackMutations(String base, int frontCount, int backCount, String hashedPassword, PasswordHasher passwordHasher) throws NoSuchAlgorithmException {
+        StringBuilder frontCombination = new StringBuilder();
+        StringBuilder backCombination = new StringBuilder();
+
+        for (int i = 0; i < Math.pow(CHARSET.length, frontCount); i++) {
+            for (int j = 0; j < Math.pow(CHARSET.length, backCount); j++) {
+                frontCombination.setLength(0);
+                backCombination.setLength(0);
+
+                for (int fc = 0, temp = i; fc < frontCount; fc++) {
+                    frontCombination.append(CHARSET[temp % CHARSET.length]);
+                    temp /= CHARSET.length;
+                }
+
+                for (int bc = 0, temp = j; bc < backCount; bc++) {
+                    backCombination.append(CHARSET[temp % CHARSET.length]);
+                    temp /= CHARSET.length;
+                }
+
+                String mutated = frontCombination + base + backCombination;
+                if (passwordHasher.hashPassword(mutated).equals(hashedPassword)) {
+                    return mutated;
+                }
+            }
         }
         return null;
     }
 
-    // Check mutations by adding characters to both front and back
-    private String checkFrontAndBackMutations(String base, int frontCount, int backCount, String hashedPassword, PasswordHasher passwordHasher) throws NoSuchAlgorithmException {
-        String[] frontCombinations = generateCombinations(frontCount, true);
-        String[] backCombinations = generateCombinations(backCount, false);
-
-        for (String front : frontCombinations) {
-            for (String back : backCombinations) {
-                String mutated = front + base + back;
-                if (passwordHasher.hashPassword(mutated).equals(hashedPassword)) {
-                    return mutated;  // Return the mutated word if matched
-                }
-            }
-        }
-        return null;  // Return null if no match found
-    }
-
-    // Generate all combinations of a given length for appending characters
-    private String[] generateCombinations(int length, boolean isFront) {
-        int totalCombinations = (int) Math.pow(CHARSET.length, length);
-        String[] combinations = new String[totalCombinations];
-
-        for (int i = 0; i < totalCombinations; i++) {
-            StringBuilder combination = new StringBuilder();
-            int temp = i;
-            for (int j = 0; j < length; j++) {
-                combination.insert(isFront ? 0 : combination.length(), CHARSET[temp % CHARSET.length]);
-                temp /= CHARSET.length;
-            }
-            combinations[i] = combination.toString();
-        }
-
-        return combinations;
-    }
-
-    // Generate combinations and check if the hashed password matches
-    private boolean generateCombinationsAndCheck(String current, int remaining, String base, boolean addToFront, String hashedPassword, PasswordHasher passwordHasher) throws NoSuchAlgorithmException {
+    private boolean generateCombinationsAndCheck(StringBuilder current, int remaining, String base, boolean addToFront, String hashedPassword, PasswordHasher passwordHasher) throws NoSuchAlgorithmException {
         if (remaining == 0) {
             String mutated = addToFront ? current + base : base + current;
-            if (passwordHasher.hashPassword(mutated).equals(hashedPassword)) {
-                return true;
-            }
-            return false;
+            return passwordHasher.hashPassword(mutated).equals(hashedPassword);
         }
 
         for (char c : CHARSET) {
-            if (generateCombinationsAndCheck(current + c, remaining - 1, base, addToFront, hashedPassword, passwordHasher)) {
+            current.append(c);
+            if (generateCombinationsAndCheck(current, remaining - 1, base, addToFront, hashedPassword, passwordHasher)) {
                 return true;
             }
+            current.setLength(current.length() - 1);
         }
         return false;
     }
-} 
+}
