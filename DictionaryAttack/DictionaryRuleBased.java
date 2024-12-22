@@ -1,9 +1,10 @@
-package DictionaryAttack;
 /* Dictionary Rule-Based Attack
  * Source: https://hashcat.net/wiki/doku.php?id=rule_based_attack
  * 
  * Class implementasi untuk algoritma dictionary rule based attack
  */
+
+package DictionaryAttack;
 
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
