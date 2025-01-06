@@ -1,18 +1,30 @@
 Hashed Password: b0ed108aee0b6e4addd1373a32f96ff505286a05299583c5c42dfa50adf212c3
 Dictionary Rule-Based Attack:
-[status: success] Result: 123inipunyagw | Time: 0s (43 ms)
+[status: success] Result: 123inipunyagw | Time: 0s (63 ms)
 Brute Force Hybrid Attack:
-[status: success] Result: 123inipunyagw | Time: 40s (40014 ms)
+[status: success] Result: 123inipunyagw | Time: 50s (50992 ms)
 
 Hashed Password: b7732ca5a09273ffc4cd500312162f76247e12bc20b7838f5c09a11451bf9224
 Dictionary Rule-Based Attack:
-[status: failed] Result: - | Time: 0s (10 ms)
+[status: failed] Result: - | Time: 0s (17 ms)
 Brute Force Hybrid Attack:
-[status: success] Result: inipunyagw123 | Time: 39s (39660 ms)
+[status: success] Result: inipunyagw123 | Time: 56s (56972 ms)
 
-Hashed Password: 73689bb6e77fcdeb268be679b09a9c68768ec22186282fca2cfec9f3f0891b7d
+Hashed Password: a6b70a8a5074fc12ed70d61d05fffa30a5bec120ed140cf009b8a6302328360b
 Dictionary Rule-Based Attack:
-[status: failed] Result: - | Time: 0s (7 ms)
+[status: success] Result: nicholas | Time: 0s (6 ms)
 Brute Force Hybrid Attack:
-[status: success] Result: 12inipunyagw12 | Time: 40s (40753 ms)
+[status: failed] Result: - | Time: 64s (64843 ms)
+
+Hashed Password: 0fd205965ce169b5c023282bb5fa2e239b6716726db5defaa8ceff225be805dc
+Dictionary Rule-Based Attack:
+[status: success] Result: p@ssword | Time: 0s (2 ms)
+Brute Force Hybrid Attack:
+[status: failed] Result: - | Time: 60s (60327 ms)
+
+Hashed Password: e36bbccee234541a09e8c2f325628ba63e64d6fb3acebe332c80aecd29a5068f
+Dictionary Rule-Based Attack:
+[status: failed] Result: - | Time: 0s (13 ms)
+Brute Force Hybrid Attack:
+[status: failed] Result: - | Time: 62s (62865 ms)
 
